@@ -52,6 +52,7 @@
     <Compile Include="Base\Chessman.cs" />
     <Compile Include="Mode\FiveStrategy.cs" />
     <Compile Include="Mode\GoStrategy.cs" />
+    <Compile Include="Mode\ReversiStrategy.cs" />
     <Compile Include="Mode\Strategy.cs" />
     <Compile Include="Mode\StrategyFactory.cs" />
     <Compile Include="Program.cs" />
@@ -64,11 +65,23 @@
     <Compile Include="Record\Memento.cs" />
     <Compile Include="Show\Draw.cs" />
     <Compile Include="Show\Facade.cs" />
+    <Compile Include="Winform\LogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\LogForm.Designer.cs">
+      <DependentUpon>LogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Winform\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Winform\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Winform\RegisterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\RegisterForm.Designer.cs">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Winform\Start.cs">
       <SubType>Form</SubType>
@@ -85,8 +98,14 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Winform\LogForm.resx">
+      <DependentUpon>LogForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Winform\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\RegisterForm.resx">
+      <DependentUpon>RegisterForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\Start.resx">
       <DependentUpon>Start.cs</DependentUpon>
