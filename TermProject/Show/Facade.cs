@@ -99,6 +99,7 @@ namespace TermProject
                 {
                     board.clear();
                     board.setturns(0);
+                    getchessman().removememento();
                     return 1;
                 }
                 else//回复局面，清除记录
@@ -118,10 +119,13 @@ namespace TermProject
             int havepassed = getchessman().pass();
             switch (havepassed) 
             {
-                case 0://五子棋返回0，表示不允许悔棋
+                case 0://五子棋返回0，表示不允许虚着
                     return false;
                 case 1:
-                    { countpass++; countundo = 0; return true; }
+                    { 
+                        countpass++; countundo = 0;
+                        return true;
+                    }
                 default: return false;
             }
         }

@@ -45,7 +45,8 @@ namespace TermProject
         {
             if (mode.pass()>0)
             {
-                board.setturns();                
+                board.setturns();
+                creatememento();
             }
             return mode.pass();
         }
