@@ -50,6 +50,11 @@
     <Compile Include="Base\Piece.cs" />
     <Compile Include="Base\Board.cs" />
     <Compile Include="Base\Chessman.cs" />
+    <Compile Include="Base\Users\AI.cs" />
+    <Compile Include="Base\Users\Role.cs" />
+    <Compile Include="Base\Users\User.cs" />
+    <Compile Include="Base\Users\Visitor.cs" />
+    <Compile Include="Log\Validator.cs" />
     <Compile Include="Mode\FiveStrategy.cs" />
     <Compile Include="Mode\GoStrategy.cs" />
     <Compile Include="Mode\ReversiStrategy.cs" />

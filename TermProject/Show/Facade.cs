@@ -37,6 +37,7 @@ namespace TermProject
             undocolor= Color.None;
             undoturns= 0;
         }
+        
         /// <summary>
         /// 获取当前执棋人
         /// </summary>
