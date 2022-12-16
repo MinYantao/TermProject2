@@ -119,6 +119,13 @@ namespace TermProject
                 g.FillEllipse(brushcover, x * unit + lefttop - r, y * unit + lefttop - r, 2 * r, 2 * r);
             }
         }
+        public void drawpiece(Piece piece)
+        {
+            int x = piece.getx();
+            int y = piece.gety();
+            Color color = piece.getcolor();
+            drawpiece(x, y, color);
+        }
         /// <summary>
         /// 绘制当前棋局
         /// </summary>

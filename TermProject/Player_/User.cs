@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace TermProject
 {
-    public class User:Role
+    /// <summary>
+    /// 已注册用户的用户名、密码和各种场次、胜场次
+    /// </summary>
+    public class User:Identity
     {
         private string name;
         private string password;
@@ -38,8 +41,19 @@ namespace TermProject
             this.recount = recount;
             this.rewin = rewin;
         }
-
-        public string getname() { return name; }
+        public override Piece play()
+        {
+            return null;
+        }
+        /// <summary>
+        /// 返回用户名
+        /// </summary>
+        /// <returns></returns>
+        public override string getname() { return name; }
+        /// <summary>
+        /// 返回密码
+        /// </summary>
+        /// <returns></returns>
         public string getpassword() { return password; }
         /// <summary>
         /// 根据模式获取对战场次

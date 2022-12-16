@@ -15,8 +15,8 @@ namespace TermProject
     public class Facade
     {
         private Board board;
-        private Chessman blackman;
-        private Chessman whiteman;
+        private Player blackman;
+        private Player whiteman;
         private int countpass;//记录pass，以在双方pass时结束棋局
         private int countundo;//记录执行悔棋次数，防止连续执行悔棋操作
         private Color undocolor;//记录悔棋者
@@ -27,7 +27,7 @@ namespace TermProject
         /// <param name="board"></param>
         /// <param name="blackman"></param>
         /// <param name="whiteman"></param>
-        public Facade(Board board, Chessman blackman, Chessman whiteman)
+        public Facade(Board board, Player blackman, Player whiteman)
         {
             this.board = board;
             this.blackman = blackman;
@@ -42,7 +42,7 @@ namespace TermProject
         /// 获取当前执棋人
         /// </summary>
         /// <returns></returns>
-        public Chessman getchessman() 
+        public Player getchessman() 
         {
             if (board.getturns() % 2 != 0)
             {
@@ -50,7 +50,7 @@ namespace TermProject
             }
             return blackman;
         }
-        public Chessman getoppisitechessman()//获取对家
+        public Player getoppositechessman()//获取对家
         {
             if (board.getturns() % 2 != 0)
             {
@@ -63,6 +63,7 @@ namespace TermProject
         /// </summary>
         /// <returns></returns>
         public int getpass() { return countpass; }
+        public Piece play() { return getchessman().play(); }
         /// <summary>
         /// 下棋
         /// </summary>
@@ -72,7 +73,7 @@ namespace TermProject
         public bool move(int x,int y)
         {
             bool canplace = false;
-            canplace = getchessman().move(x,y);
+            canplace = ((Chessman)getchessman()).move(x,y);
             countpass = 0;countundo= 0;
             return canplace;
         }
@@ -100,13 +101,13 @@ namespace TermProject
                 {
                     board.clear();
                     board.setturns(0);
-                    getchessman().removememento();
+                    ((Chessman)getchessman()).removememento();
                     return 1;
                 }
                 else//回复局面，清除记录
                 {
-                    getchessman().undo();
-                    getchessman().removememento();
+                    ((Chessman)getchessman()).undo();
+                    ((Chessman)getchessman()).removememento();
                     return 1;
                 }
 
@@ -117,7 +118,7 @@ namespace TermProject
         /// </summary>
         public bool pass()
         {
-            int havepassed = getchessman().pass();
+            int havepassed = ((Chessman)getchessman()).pass();
             switch (havepassed) 
             {
                 case 0://五子棋返回0，表示不允许虚着
@@ -136,7 +137,7 @@ namespace TermProject
         /// <returns></returns>
         public int resignation()
         {
-            Color color = this.getchessman().getcolor();
+            Color color = ((Chessman)getchessman()).resignation();
             if (color == Color.White)
                 return 1;
             else
@@ -149,8 +150,8 @@ namespace TermProject
         {
             board.clear();
             board.setturns(0);
-            blackman.clear();
-            whiteman.clear();
+            ((Chessman)getchessman()).clear();
+            ((Chessman)getoppositechessman()).clear();
             countpass=0; countundo=0;
             undocolor = Color.None;
         }
@@ -159,11 +160,11 @@ namespace TermProject
         /// </summary>
         public int isover() 
         {
-            int isover = board.getstrategy().isover(board,getchessman(),getoppisitechessman());
+            int isover = board.getstrategy().isover(board, ((Chessman)getchessman()), ((Chessman)getoppositechessman()));
             if (isover == 0&& board.getstrategy()is GoStrategy)
             {
                 board.setturns();
-                isover = board.getstrategy().isover(board, getchessman());
+                isover = board.getstrategy().isover(board, ((Chessman)getchessman()));
                 
             }
             return isover;

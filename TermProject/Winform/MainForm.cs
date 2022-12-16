@@ -31,6 +31,7 @@ namespace TermProject.Winform
             this.board = board;
             Graphics g = this.CreateGraphics();
             draw = new Draw(board,g);
+            play();
         }
         public MainForm()
         {
@@ -44,6 +45,19 @@ namespace TermProject.Winform
         private void MainForm_Shown(object sender, EventArgs e)
         {
             draw.drawboard();
+        }
+        /// <summary>
+        /// 自动触发下棋
+        /// </summary>
+        private void play()
+        {
+            Piece location = facade.play();
+            if(location != null) 
+            {
+                draw.drawpiece(location);
+                play();
+            }
+            return;
         }
         /// <summary>
         /// 鼠标点取下子位置
@@ -74,6 +88,7 @@ namespace TermProject.Winform
             if(facade.isover()<0)
             {
                 draw.showturn(board.getturns());
+                play();
                 return;
             }
             else
@@ -187,6 +202,7 @@ namespace TermProject.Winform
             facade.restart();
             draw.drawpieces();
             draw.showturn(board.getturns());
+            play();
         }
         /// <summary>
         /// 存档（菜单栏File-Save）

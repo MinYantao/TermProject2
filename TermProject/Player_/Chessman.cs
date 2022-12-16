@@ -8,15 +8,12 @@ using System.Threading.Tasks;
 namespace TermProject
 {
     /// <summary>
-    /// 下棋者类    
+    /// 真人下棋者类    
     /// </summary>
     //持有对board的引用，可对棋盘进行各种操作
     //对自己每次落子后的棋形进行记录，也可以根据记录将当前棋形回复到某一历史状态
-    public class Chessman
-    {
-        private Strategy mode;
-        private Color color;
-        private Board board;
+    public class Chessman:Player
+    {        
         private List<Memento> record;
         private int current;
         /// <summary>
@@ -32,11 +29,7 @@ namespace TermProject
             record = new List<Memento>();
             current = 0;
         }
-        /// <summary>
-        /// 获取执棋色
-        /// </summary>
-        /// <returns></returns>
-        public Color getcolor() { return this.color; }
+        public override Piece play() { return null; }
         /// <summary>
         /// 虚着
         /// </summary>
@@ -93,9 +86,9 @@ namespace TermProject
         /// 投子认负
         /// </summary>
         /// <returns></returns>
-        public bool resignation()
+        public Color resignation()
         {
-            return false;
+            return color;
         }
         /// <summary>
         /// 创建备忘并记录

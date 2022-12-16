@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TermProject
 {
-    public interface Role
+    public abstract class Identity:Player
     {
-        string getname();
+        public abstract string getname();
     }
 }
