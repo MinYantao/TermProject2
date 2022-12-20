@@ -16,6 +16,7 @@ namespace TermProject
         protected Board board;
         public Player() { }
         public Player(Board board, Color color) { this.board = board;this.color = color; }
+        public void setmode(Strategy mode) { this.mode = mode;}
         /// <summary>
         /// 获取执棋色
         /// </summary>

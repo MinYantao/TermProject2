@@ -12,15 +12,10 @@ namespace TermProject
     public class Visitor:Identity
     {
         private string name;
-        private Chessman chessman;
         public Visitor()
         {
             name = "Visitor";
         }
         public override string getname() { return name; }
-        public override Piece play()
-        {
-            return null;
-        }
     }
 }

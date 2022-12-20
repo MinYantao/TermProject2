@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TermProject
 {
-    public abstract class Identity:Player
+    public abstract class Identity
     {
         public abstract string getname();
     }

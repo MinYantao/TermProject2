@@ -11,15 +11,23 @@ namespace TermProject
     /// 五子棋策略类
     /// </summary>
     public class FiveStrategy : Strategy
-    {   
+    {
         /// <summary>
-    /// 棋串获取
-    /// </summary>
-    /// <param name="board"></param>
-    /// <param name="p"></param>
-    /// <param name="colors"></param>
-    /// <param name="orientation"></param>
-    /// <returns></returns>
+        /// 局面初始化
+        /// </summary>
+        /// <param name="board"></param>
+        public override void init(Board board)
+        {
+            return;
+        }
+        /// <summary>
+        /// 棋串获取
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="p"></param>
+        /// <param name="colors"></param>
+        /// <param name="orientation"></param>
+        /// <returns></returns>
         //获取给定方向的一串棋     
         public Group creategroup(Board board, Piece p,int orientation)
         {
@@ -113,7 +121,7 @@ namespace TermProject
         /// <param name="color"></param>
         /// <returns></returns>
         //每一次落子后都会进行判断
-        //如棋盘未满且无色达五子，则返回0（未终局）
+        //如棋盘未满且无色达五子，则返回-1（未终局）
         //如果棋盘满则返回3（平局）
         //否则返回1（黑达五子）或2（白达五子）
         public override int isover(Board board, Chessman chessman1 = null, Chessman chessman2 = null)

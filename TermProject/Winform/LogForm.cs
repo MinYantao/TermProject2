@@ -16,10 +16,18 @@ namespace TermProject.Winform
 
         private List<User> users;
         private Validator validator;
+        private Player blackone;
+        private Player whiteone;
         public LogForm()
         {
             InitializeComponent();
+            users= new List<User>();
+            validator= new Validator();
+            //readusers();
         }
+        /// <summary>
+        /// 读取本地存储的用户
+        /// </summary>
         public void readusers()
         {
             string path = "";
@@ -33,6 +41,11 @@ namespace TermProject.Winform
                 users.Add(toUser(line));
             }
         }
+        /// <summary>
+        /// 根据用户记录生成用户实例
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         public User toUser(string line)
         {
             string[] info = line.Split('/');
@@ -51,45 +64,120 @@ namespace TermProject.Winform
         {
 
         }
-
+        /// <summary>
+        /// 生成AI角色
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AIbutton1_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("Only support AI for FiveGo mode currently!");
+            blackone = new AI(Board.getInstance(),Color.Black);
+            hascreated();
         }
-
         private void AIbutton2_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("Only support AI for FiveGo mode currently!");
+            whiteone = new AI(Board.getInstance(), Color.White);
+            hascreated();
         }
-
+        /// <summary>
+        /// 生成游客角色
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Notbutton1_Click(object sender, EventArgs e)
         {
-
+            blackone=new Chessman(Board.getInstance(),Color.Black,new Visitor());
+            hascreated();
         }
-
         private void Notbutton2_Click(object sender, EventArgs e)
         {
-
+            whiteone = new Chessman(Board.getInstance(), Color.White, new Visitor());
+            hascreated();
         }
-
+        /// <summary>
+        /// 生成用户角色
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Logbutton1_Click(object sender, EventArgs e)
         {
+            string name = Nametext1.Text;
+            string password = Passtext1.Text;
+            if(name==null|| password==null)
+            {
+                MessageBox.Show("Please enter your information for login！");
+                return;
+            }
+            User u = new User();
+            if (validator.validate(name, password, users, ref u))
+            {
+                MessageBox.Show("Succesfully login!");
+                blackone=new Chessman(Board.getInstance(),Color.Black,u);
+                loadavator(name);
+                hascreated();
+                return;
+            }
+            else
+            {
+                MessageBox.Show("User not existed!Please register first!");
+                Nametext1.Clear();
+                Passtext1.Clear();
+                RegisterForm r = new RegisterForm(users);
+                r.ShowDialog();
+            }
+        }
+        //还没写！
+        /// <summary>
+        /// 加载头像
+        /// </summary>
+        /// <param name="name"></param>
+        private void loadavator(string name)
+        {
 
         }
-
         private void Logbutton2_Click(object sender, EventArgs e)
         {
-
+            string name = Nametext2.Text;
+            string password = Passtext2.Text;
+            if (name == null || password == null)
+            {
+                MessageBox.Show("Please enter your information for login！");
+                return;
+            }
+            User u = new User();
+            if (validator.validate(name, password, users, ref u))
+            {
+                MessageBox.Show("Succesfully login!");
+                whiteone = new Chessman(Board.getInstance(), Color.White, u);
+                loadavator(name);
+                hascreated();
+                return;
+            }
+            else
+            {
+                MessageBox.Show("User not existed!Please register first!");
+                Nametext2.Clear();
+                Passtext2.Clear();
+                RegisterForm r = new RegisterForm(users);
+                r.ShowDialog();
+            }
         }
-
-        private void Rbutton1_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 是否已创建两个角色
+        /// </summary>
+        /// <returns></returns>
+        private bool hascreated()
         {
-
-        }
-
-        private void Rbutton2_Click(object sender, EventArgs e)
-        {
-
+            if(blackone!=null&&whiteone!=null)
+            {
+                this.Hide();
+                Start start = new Start(blackone, whiteone);
+                start.ShowDialog();
+                this.Close();
+            }                
+            return false;
         }
     }
 }

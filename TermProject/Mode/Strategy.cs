@@ -59,6 +59,11 @@ namespace TermProject
                 return "Five";
         }
         /// <summary>
+        /// 局面初始化
+        /// </summary>
+        /// <param name="board"></param>
+        public abstract void init(Board board);
+        /// <summary>
         /// 胜负判断
         /// </summary>
         /// <param name="board"></param>
@@ -73,7 +78,7 @@ namespace TermProject
         /// <param name="past"></param>
         /// <param name="isundo"></param>
         /// <returns></returns>
-        public abstract bool forbiddenjudgement(int x, int y, Board board, Piece[,] past);
+        public abstract bool forbiddenjudgement(int x, int y, Board board, Piece[,] past=null);
         /// <summary>
        /// 虚着
        /// </summary>

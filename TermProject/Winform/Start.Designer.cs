@@ -66,7 +66,8 @@
             this.ModeChoose.FormattingEnabled = true;
             this.ModeChoose.Items.AddRange(new object[] {
             "Go",
-            "Five"});
+            "Five",
+            "Reversi"});
             this.ModeChoose.Location = new System.Drawing.Point(198, 158);
             this.ModeChoose.Name = "ModeChoose";
             this.ModeChoose.Size = new System.Drawing.Size(121, 44);

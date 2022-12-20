@@ -19,6 +19,7 @@ namespace TermProject
         private int fivewin;
         private int recount;
         private int rewin;
+        public User() { }
         public User(string name, string password)
         {
             this.name = name;
@@ -40,10 +41,6 @@ namespace TermProject
             this.fivewin = fivewin;
             this.recount = recount;
             this.rewin = rewin;
-        }
-        public override Piece play()
-        {
-            return null;
         }
         /// <summary>
         /// 返回用户名
@@ -129,6 +126,18 @@ namespace TermProject
         public void setfivewin() { fivewin++; }
         public void setrecount() { recount++; }
         public void setrewin() { rewin++; }
+        /// <summary>
+        /// 将用户转化为字符串输出
+        /// </summary>
+        /// <returns></returns>
+        //name:xxx/password:xxx/Go:xx:xx/Five:xx:xx/Revesi:xx:xx
+        public override string ToString()
+        {
+            string s = "name:"+name+"/"+"password:"+password+ "/"+"Go:"+Convert.ToString(gowin)+":"+ Convert.ToString(gocount)
+                +"/"+ "Five:"+ Convert.ToString(fivewin) + ":" + Convert.ToString(fivecount) + "/"+
+                "Revesi:"+ Convert.ToString(rewin) + ":" + Convert.ToString(recount);
+            return s;
+        }
     }
     
 }

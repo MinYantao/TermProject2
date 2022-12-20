@@ -18,19 +18,23 @@ namespace TermProject.Winform
         private Draw draw;
         private Board board;
         private Facade facade;
+        private Player black;
+        private Player white;
+        private int forbidden;
         /// <summary>
         /// 初始化主窗体
         /// </summary>
         /// <param name="board"></param>
-        public MainForm(Board board)
+        public MainForm(Board board,Player black,Player white)
         {
             InitializeComponent();
-            Chessman blackman = new Chessman(board, Color.Black);
-            Chessman whiteman = new Chessman(board, Color.White);
-            this.facade = new Facade(board,blackman, whiteman);
+            this.facade = new Facade(board,black, white);
             this.board = board;
+            this.black = black;
+            this.white = white;
             Graphics g = this.CreateGraphics();
             draw = new Draw(board,g);
+            forbidden= 0;
             play();
         }
         public MainForm()
@@ -51,11 +55,22 @@ namespace TermProject.Winform
         /// </summary>
         private void play()
         {
+            //先判断是否全为禁手（主要针对黑白棋和围棋）
+            if (facade.allforbidden())
+            {
+                forbidden++;
+                board.setturns();
+                if (forbidden==2)
+                {
+                    over();
+                }                
+                play();
+            }
             Piece location = facade.play();
             if(location != null) 
             {
                 draw.drawpiece(location);
-                play();
+                isover();
             }
             return;
         }
@@ -85,18 +100,27 @@ namespace TermProject.Winform
             //落子
             draw.drawpieces();
             //判断是否终局
-            if(facade.isover()<0)
+            isover();
+        }     
+        /// <summary>
+        /// 判断是否终局
+        /// </summary>
+        private void isover()
+        {
+            int i = facade.isover();
+            if (i < 0)
             {
+                board.setturns();
                 draw.showturn(board.getturns());
                 play();
                 return;
             }
             else
             {
-                over(facade.isover());
+                over(i);
                 return;
             }
-        }        
+        }
         /// <summary>
         /// 虚着（pass按钮）
         /// </summary>
@@ -106,6 +130,7 @@ namespace TermProject.Winform
         {
             if(facade.pass())
             {
+                board.setturns();
                 if(facade.getpass()<2)
                     draw.showturn(board.getturns());
                 else
@@ -124,6 +149,16 @@ namespace TermProject.Winform
         /// </summary>
         private void over(int note=0)
         {
+            if (black is Chessman)
+            {
+                if (((Chessman)black).getidentity() is User)
+                    ((User)(((Chessman)black).getidentity())).setcount(board.getstrategy());
+            }
+            if (white is Chessman)
+            {
+                if (((Chessman)white).getidentity() is User)
+                    ((User)(((Chessman)white).getidentity())).setcount(board.getstrategy());
+            }
             select(note);
             return;
         }
@@ -136,11 +171,23 @@ namespace TermProject.Winform
             {
                 case 1:
                     {
-                        MessageBox.Show("Black win!");return;
+                        MessageBox.Show("Black win!");
+                        if(black is Chessman)
+                        {
+                            if(((Chessman)black).getidentity() is User)
+                                ((User)(((Chessman)black).getidentity())).setwin(board.getstrategy());
+                        }
+                        return;
                     }
                 case 2:
                     {
-                        MessageBox.Show("White win!"); return;
+                        MessageBox.Show("White win!");
+                        if (white is Chessman)
+                        {
+                            if (((Chessman)white).getidentity() is User)
+                                ((User)(((Chessman)white).getidentity())).setwin(board.getstrategy());
+                        }
+                        return;
                     }
                 case 3:
                     {
@@ -249,7 +296,7 @@ namespace TermProject.Winform
         private void restartToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Start f = new Start();
+            Start f = new Start(black,white);
             f.ShowDialog();
             this.Close();
         }

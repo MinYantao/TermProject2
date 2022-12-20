@@ -15,6 +15,8 @@ namespace TermProject
         {
             if(mode == "Go")
                 return new GoStrategy();
+            else if(mode == "Reversi")
+                return new ReversiStrategy();
             else
                 return new FiveStrategy();
         }

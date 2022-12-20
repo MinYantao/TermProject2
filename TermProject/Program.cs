@@ -19,8 +19,8 @@ namespace TermProject
             //Strategy strategy = StrategyFactory.createstrategy("Five");
             //Board board = Board.getInstance(strategy, 19);
             //MainForm f = new MainForm(board);
-            //Application.Run(f);
-            Application.Run(new Start());
+            //Application.Run(new MainForm());
+            Application.Run(new LogForm());
             //Console.ReadKey();
         }
     }

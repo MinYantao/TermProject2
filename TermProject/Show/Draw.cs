@@ -15,6 +15,7 @@ namespace TermProject
     public class Draw
     {
         private Board board;
+        private Strategy mode;
         private Graphics g;
         private int unit = 20;//棋盘格边长
         private int size;
@@ -24,6 +25,7 @@ namespace TermProject
         { 
             this.board = board; 
             this.size = board.getsize();
+            this.mode = board.getstrategy();
             this.g = g;
             g.CompositingMode = CompositingMode.SourceCopy;
             lefttop =220 - (size - 1) * unit / 2;
@@ -49,8 +51,10 @@ namespace TermProject
             //绘制粗外边框
             int lefttopx = lefttop;
             int lefttopy = lefttopx;
+            if (mode is ReversiStrategy)
+                size++;
             g.DrawRectangle(thickPen, new Rectangle(lefttopx,lefttopy, (size - 1) * unit, (size - 1) * unit));
-            //绘制横轴竖轴
+            //绘制横轴竖轴            
             for (int i = 1; i < size; i++)
             {
                 g.DrawLine(thinPen, new Point(lefttopx, lefttopy + i * unit),
@@ -61,6 +65,8 @@ namespace TermProject
                 g.DrawLine(thinPen, new Point(lefttopx + i*unit, lefttopy),
                                    new Point(lefttopx + i * unit, lefttopy+(size-1)*unit));
             }
+            if (mode is ReversiStrategy)
+                size--;
             //绘制棋子
             SolidBrush brushblack = new SolidBrush(System.Drawing.Color.Black);
             SolidBrush brushwhite = new SolidBrush(System.Drawing.Color.White);
@@ -100,23 +106,26 @@ namespace TermProject
         /// <param name="p"></param>
         /// <param name="g"></param>
         public void drawpiece(int x,int y,Color color)
-        {           
+        {
+            int X;
+            int Y;
+            getcoordinate(x, y, out X, out Y);
             //画黑棋
             if (color== Color.Black)
             {
                 SolidBrush brushblack = new SolidBrush(System.Drawing.Color.Black);
-                g.FillEllipse(brushblack, x*unit+lefttop-r, y*unit+lefttop-r, 2*r,2*r);
+                g.FillEllipse(brushblack, X, Y, 2*r,2*r);
             }
             else if(color== Color.White)//画白棋
             {
                 SolidBrush brushwhite = new SolidBrush(System.Drawing.Color.White);
-                g.FillEllipse(brushwhite, x*unit+lefttop - r, y * unit +lefttop - r, 2 * r, 2 * r);
+                g.FillEllipse(brushwhite, X, Y, 2 * r, 2 * r);
             }
             else if(color == Color.None)//无子覆盖
             {
                 
                 SolidBrush brushcover = new SolidBrush(System.Drawing.Color.Bisque);
-                g.FillEllipse(brushcover, x * unit + lefttop - r, y * unit + lefttop - r, 2 * r, 2 * r);
+                g.FillEllipse(brushcover, X, Y, 2 * r, 2 * r);
             }
         }
         public void drawpiece(Piece piece)
@@ -140,7 +149,7 @@ namespace TermProject
                 for(int j = 0; j<size;j++)
                 {
                     temp = pieces[i, j]; 
-                    drawpiece(temp.getx(), temp.gety(), temp.getcolor());
+                    drawpiece(temp);
                 }
             }
         }
@@ -155,7 +164,7 @@ namespace TermProject
             bool inboard = false;
             int lefttopx = lefttop;
             int lefttopy = lefttopx;
-            int rightbottomx = lefttopx+ (size-1)*unit;
+            int rightbottomx = lefttopx+ (mode is ReversiStrategy?size:size-1)*unit;
             int rightbottomy = rightbottomx;
             if(x>=lefttopx&& x<=rightbottomx&&y>=lefttopy&&y<=rightbottomy)
             {
@@ -180,6 +189,12 @@ namespace TermProject
             int yc = y_ / unit;
             double yd = ((double)y_) / unit;
             double[] ds = new double[4];
+            //黑白棋是看落在（0，0）到（7，7）哪个格内
+            if(mode is ReversiStrategy)
+            {
+                X=xc; Y=yc;return;
+            }
+            //围棋/五子棋看选点离哪个角点最近
             ds[0] = (xd - (double)xc)* (xd - (double)xc)+ (yd - (double)yc)* (yd - (double)yc);
             ds[1] = (xd - (double)xc-1.0)* (xd - (double)xc - 1.0)+ (yd - (double)yc) * (yd - (double)yc);
             ds[2] = (xd - (double)xc - 1.0) * (xd - (double)xc - 1.0)+ (yd - (double)yc - 1.0)* (yd - (double)yc - 1.0);
@@ -216,6 +231,17 @@ namespace TermProject
                         break;
                     }
             }
+        }
+        public void getcoordinate(int x, int y, out int X, out int Y)
+        {
+            if(mode is ReversiStrategy)
+            {
+                X = (2 * x + 1) * unit / 2 + lefttop-r;
+                Y = (2 * y + 1) * unit / 2 + lefttop-r;
+                return;
+            }
+            X = x * unit + lefttop - r;
+            Y = y * unit + lefttop - r;
         }
     }
  }

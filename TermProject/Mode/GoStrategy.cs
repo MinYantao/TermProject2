@@ -13,6 +13,15 @@ namespace TermProject
     public class GoStrategy : Strategy
     {
         /// <summary>
+        /// 局面初始化
+        /// </summary>
+        /// <param name="board"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public override void init(Board board)
+        {
+            return;
+        }
+        /// <summary>
         /// 获取块
         /// </summary>
         /// <param name="p"></param>
@@ -402,16 +411,16 @@ namespace TermProject
             //终局则传递0，非终局传递-1
             if (isfull(board))
                 return 0;
-            if(allforbidden(board,chessman1))
-            {
-                board.setturns();
-                if (allforbidden(board, chessman2))
-                {
-                    board.setturns(board.getturns() - 1);
-                    return 0;
-                }
-                board.setturns(board.getturns() - 1);
-            }            
+            //if(allforbidden(board,chessman1))
+            //{
+            //    board.setturns();
+            //    if (allforbidden(board, chessman2))
+            //    {
+            //        board.setturns(board.getturns() - 1);
+            //        return 0;
+            //    }
+            //    board.setturns(board.getturns() - 1);
+            //}            
             return -1;
         }
         /// <summary>

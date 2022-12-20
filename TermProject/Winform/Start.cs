@@ -16,10 +16,13 @@ namespace TermProject.Winform
     /// </summary>
     public partial class Start : Form
     {
-        
-        public Start()
+        Player black;
+        Player white;
+        public Start(Player black,Player white)
         {
             InitializeComponent();
+            this.black = black;
+            this.white = white;
         }
         /// <summary>
         /// 选择模式和尺寸
@@ -29,16 +32,29 @@ namespace TermProject.Winform
         private void StartBut_Click(object sender, EventArgs e)
         {
             string mode = ModeChoose.SelectedItem.ToString();
-            int size = Convert.ToInt32(InputSize.Text);
+            int size = Convert.ToInt32(InputSize.Text);            
             if(size>19||size<8)//判断尺寸合法性
             {
                 MessageBox.Show("Please enter board size betwwen 8 and 19!");
                 return;
-            }            
+            }       
+            else if(mode == "Reversi" && size != 8)
+            {
+                ChooseForm c = new ChooseForm();
+                c.ShowDialog();
+                if (c.again())
+                {
+                    c.Close();return;
+                }
+                c.Close();
+            }
             this.Hide();
             Strategy strategy = StrategyFactory.createstrategy(mode);
             Board board = Board.getInstance(strategy,size);
-            MainForm f = new MainForm(board);
+            strategy.init(board);
+            black.setmode(strategy);
+            white.setmode(strategy);
+            MainForm f = new MainForm(board,black,white);
             f.ShowDialog();           
             this.Close();
         }        

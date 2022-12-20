@@ -63,7 +63,27 @@ namespace TermProject
         /// </summary>
         /// <returns></returns>
         public int getpass() { return countpass; }
+        /// <summary>
+        /// 自动下棋
+        /// </summary>
+        /// <returns></returns>
         public Piece play() { return getchessman().play(); }
+        /// <summary>
+        /// 判断是否全为禁手
+        /// </summary>
+        /// <returns></returns>
+        public bool allforbidden()
+        {
+            if(board.getstrategy()is ReversiStrategy)
+            {
+                return((ReversiStrategy)board.getstrategy()).allforbidden(board);
+            }
+            if(board.getstrategy()is GoStrategy)
+            {
+                return ((GoStrategy)board.getstrategy()).allforbidden(board, (Chessman)getchessman());
+            }
+            return false;
+        }
         /// <summary>
         /// 下棋
         /// </summary>
@@ -102,6 +122,7 @@ namespace TermProject
                     board.clear();
                     board.setturns(0);
                     ((Chessman)getchessman()).removememento();
+                    board.getstrategy().init(board);
                     return 1;
                 }
                 else//回复局面，清除记录
@@ -154,6 +175,7 @@ namespace TermProject
             ((Chessman)getoppositechessman()).clear();
             countpass=0; countundo=0;
             undocolor = Color.None;
+            board.getstrategy().init(board);
         }
         /// <summary>
         /// 判断是否终局
@@ -161,12 +183,12 @@ namespace TermProject
         public int isover() 
         {
             int isover = board.getstrategy().isover(board, ((Chessman)getchessman()), ((Chessman)getoppositechessman()));
-            if (isover == 0&& board.getstrategy()is GoStrategy)
-            {
-                board.setturns();
-                isover = board.getstrategy().isover(board, ((Chessman)getchessman()));
+            //if (isover == 0&& board.getstrategy()is GoStrategy)
+            //{
+            //    board.setturns();
+            //    isover = board.getstrategy().isover(board, ((Chessman)getchessman()));
                 
-            }
+            //}
             return isover;
         }
         /// <summary>

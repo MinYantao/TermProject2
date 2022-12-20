@@ -26,6 +26,14 @@ namespace TermProject
         }
         //设置及获取颜色
         public Color getcolor() { return color; }
+        public Color getoppositecolor()
+        {
+            if (color == Color.Black)
+                return Color.White;
+            else if (color == Color.White)
+                return Color.Black;
+            return Color.Black;
+        }
         public void setcolor(Color color) { this.color = color; }
         public void setcolor(string color) 
         {

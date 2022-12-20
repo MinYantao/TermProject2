@@ -16,20 +16,40 @@ namespace TermProject
     {        
         private List<Memento> record;
         private int current;
+        private Identity identity;
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="board"></param>
         /// <param name="color"></param>
-        public Chessman(Board board,Color color)
+        public Chessman(Board board,Color color, Identity identity)
         {
             this.board = board;
             this.mode = board.getstrategy();
             this.color = color;
             record = new List<Memento>();
             current = 0;
+            this.identity = identity;
         }
+        public Identity getidentity() { return identity; }
+        /// <summary>
+        /// 不可自动下棋
+        /// </summary>
+        /// <returns></returns>
         public override Piece play() { return null; }
+        /// <summary>
+        /// 用户记录
+        /// </summary>
+        /// <param name="win"></param>
+        public void irecord(bool win)
+        {
+            if(identity is User)
+            {
+                if (win)
+                    ((User)identity).setwin(board.getstrategy());
+                ((User)identity).setcount(board.getstrategy());
+            }
+        }
         /// <summary>
         /// 虚着
         /// </summary>
@@ -38,7 +58,6 @@ namespace TermProject
         {
             if (mode.pass()>0)
             {
-                board.setturns();
                 creatememento();
             }
             return mode.pass();
@@ -56,7 +75,6 @@ namespace TermProject
             isforbidden = mode.forbiddenjudgement(x, y, board, past);
             if(!isforbidden)
             {
-                board.setturns();
                 creatememento();
                 return true;
             }
@@ -78,7 +96,6 @@ namespace TermProject
         /// </summary>
         public void undo()
         {
-
             restorememento(current - 1);
             return;
         }

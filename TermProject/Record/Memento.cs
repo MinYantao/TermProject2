@@ -18,7 +18,7 @@ namespace TermProject
         public Memento(Piece[,] pieces,int turns)
         {
             this.pieces = (Piece[,])Clone.clone(pieces);
-            this.turns = turns;
+            this.turns = turns+1;
         }
         public Piece[,] getpieces() { return pieces; }
         public int getturns() { return turns; }
