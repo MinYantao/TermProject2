@@ -1,3 +1,0 @@
-
-name:A/password:a/Go:0:0/Five:0:0/Revesi:0:0
-name:B/password:b/Go:0:0/Five:0:0/Revesi:0:0

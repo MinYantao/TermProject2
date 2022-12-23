@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -217,10 +218,28 @@ namespace TermProject
         {
             try
             {
-                string filepath = Path.Combine(path, "file.txt");
+                string name = blackman.getname()+"-"+whiteman.getname()+ ".txt";
+                string filepath = Path.Combine(path, name);
                 FileStream aFile = new FileStream(filepath, FileMode.Create);
                 StreamWriter sw = new StreamWriter(aFile);
-                sw.Write(this.board.ToString());
+                Piece[,] past = ((Chessman)getchessman()).getpast();
+                string s = this.board.ToString();
+                s += "past:\n";
+                if (past != null)
+                {
+                    for (int i = 0; i < board.getsize(); i++)
+                    {
+                        for (int j = 0; j < board.getsize(); j++)
+                        {
+                            s += past[i, j].ToString();
+                            s += " ";
+                        }
+                        s += "\n";
+                    }
+                }
+                else
+                    s += "null\n";
+                sw.Write(s);
                 sw.Close();
                 return true;
             }
@@ -236,15 +255,37 @@ namespace TermProject
         {
             try
             {
-                FileStream aFile = new FileStream(path, FileMode.Open);
+                string name = blackman.getname() + "-" + whiteman.getname() + ".txt";
+                string filepath = Path.Combine(path, name);
+                FileStream aFile = new FileStream(filepath, FileMode.Open);
                 StreamReader sr = new StreamReader(aFile);
                 string line;
-                List<string> strs = new List<string>();
+                List<String> strs = new List<String>();
+                int index = 0;
                 while ((line = sr.ReadLine()) != null)
                 {
                     strs.Add(line);
+                    if(line=="past:")
+                        index=strs.Count;
                 }
-                board.toboard(strs);
+                aFile.Close();
+                List<String> boardlist = strs.GetRange(0,index-1);
+                board.toboard(boardlist);
+                List<String> past = strs.GetRange(index,strs.Count-index);
+                if (past[0] == "null")
+                    ((Chessman)getchessman()).creatememento(null);
+                Piece[,] pieces = new Piece[board.getsize(), board.getsize()];
+                for (int i = 0; i < board.getsize(); i++)
+                {
+                    string[] strings = past[i].Split(' ');
+                    for (int j = 0; j < board.getsize(); j++)
+                    {
+                        string color = strings[j].Split(',')[2];
+                        pieces[i, j] = new Piece(board.colorfactory(color), i, j);
+                    }
+                }
+                ((Chessman)getchessman()).creatememento(pieces);
+
                 return true;
             }
             catch { return false; }

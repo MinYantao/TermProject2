@@ -39,7 +39,7 @@ namespace TermProject
         {
             this.size = board.getsize();
             lefttop = 220 - (size - 1) * unit / 2;
-            g.Clear(System.Drawing.Color.Bisque);
+            g.Clear(System.Drawing.Color.LightSteelBlue);
         }
         /// <summary>
         /// 绘制棋盘

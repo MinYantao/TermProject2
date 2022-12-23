@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace TermProject.Winform
 {
@@ -191,7 +193,25 @@ namespace TermProject.Winform
         {
             select(note);
             setinfo();
+            updateuser(black);
+            updateuser(white);            
             return;
+        }
+        /// <summary>
+        /// 更新用户信息
+        /// </summary>
+        /// <param name="player"></param>
+        private void updateuser(Player player)
+        {
+            if (player is Chessman && ((Chessman)player).getidentity() is User)
+            {
+                string name = player.getname() + ".txt";
+                string filepath = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Users\\" + name;
+                FileStream aFile = new FileStream(filepath, FileMode.Create);
+                StreamWriter sw = new StreamWriter(aFile);
+                sw.Write(((Chessman)player).getidentity().ToString());
+                sw.Close();
+            }
         }
         //如果非终局，围棋和五子棋模式均传来-1；如果终局：
         //五子棋可以直接从isover传递来的note（1/2/3）知道是谁赢或平局
@@ -321,10 +341,17 @@ namespace TermProject.Winform
         /// <param name="e"></param>
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog path = new FolderBrowserDialog();
-            path.ShowDialog();
-            if (!facade.save(path.SelectedPath))
-                MessageBox.Show("Save failed!");
+            if ((black.getname().IndexOf("AI")>-1||black.getname()=="Visitor")&&(white.getname().IndexOf("AI") > -1 || white.getname() == "Visitor"))
+            {
+                MessageBox.Show("Can't save!");
+                return;
+            }
+            else
+            {
+                string path = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Records";
+                if (!facade.save(path))
+                    MessageBox.Show("Save failed!");
+            }
             return;
         }
         /// <summary>
@@ -334,22 +361,17 @@ namespace TermProject.Winform
         /// <param name="e"></param>
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Title = "请选择文件夹";
-            dialog.Filter = "txt文件(*.*)|*.txt";
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            string file = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Records";
+            if (!facade.load(file))
             {
-                string file = dialog.FileName;
-                if (!facade.load(file))
-                {
-                    MessageBox.Show("Load failed!");
-                    return;
-                }
-                draw.update();
-                draw.drawboard();
-                draw.drawpieces();
-                draw.showturn(board.getturns());
+                MessageBox.Show("Load failed!");
+                return;
             }
+            draw.update();
+            draw.drawboard();
+            draw.drawpieces();
+            draw.showturn(board.getturns());
         }
         /// <summary>
         /// 重新开始游戏（重选模式，重新设置棋盘）（菜单栏Restart）
@@ -375,7 +397,25 @@ namespace TermProject.Winform
             }
             else
             { play(); }
-        } 
+        }
+        /// <summary>
+        /// 开始录屏
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void startRecordToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }        
+        /// <summary>
+        /// 回放
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void playBackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
         #endregion
     }
 }

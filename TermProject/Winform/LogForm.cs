@@ -34,19 +34,30 @@ namespace TermProject.Winform
         /// </summary>
         public void readusers()
         {
-            string path = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Users\\Users.txt";
-            FileStream aFile = new FileStream(path, FileMode.OpenOrCreate);
-            StreamReader sr = new StreamReader(aFile);
-            string line;
-            List<string> strs = new List<string>();
-            while ((line = sr.ReadLine()) != null)
+            string DirName = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Users";
+            DirectoryInfo dir = new DirectoryInfo(DirName);//文件夹信息
+            if (null != dir.Parent && dir.Attributes.ToString().IndexOf("System") > -1)//如果非根路径且是系统文件夹则跳过
             {
-                if (line == "")
-                    continue;
-                strs.Add(line);
-                users.Add(toUser(line));
+                return;
             }
-            aFile.Close();
+            FileInfo[] fileinfo = dir.GetFiles(); //取得所有文件
+            string filename = string.Empty;
+            for (int i = 0; i < fileinfo.Length; i++)
+            {
+                FileStream aFile = new FileStream(fileinfo[i].FullName, FileMode.Open);
+                StreamReader sr = new StreamReader(aFile);
+                string line;
+                List<string> strs = new List<string>();
+                while ((line = sr.ReadLine()) != null)
+                {                    
+                    users.Add(toUser(line));
+                }
+                aFile.Close();
+            }
+            //string path = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Users\\Users.txt";
+            ////FileStream aFile = new FileStream(path, FileMode.OpenOrCreate);
+            ////StreamReader sr = new StreamReader(aFile);    
+            
         }
         /// <summary>
         /// 根据用户记录生成用户实例
@@ -133,7 +144,15 @@ namespace TermProject.Winform
                 return;
             }
             User u = new User();
-            if (validator.validate(name, password, users, ref u))
+            if(!validator.hasRegistered(name,users))
+            {
+                MessageBox.Show("User not existed!Please register first!");
+                Nametext1.Clear();
+                Passtext1.Clear();
+                RegisterForm r = new RegisterForm(users);
+                r.ShowDialog();
+            }
+            else if (validator.validate(name, password, users, ref u))
             {
                 MessageBox.Show("Succesfully login!");
                 blackone = new Chessman(Board.getInstance(), Color.Black, u);
@@ -143,11 +162,9 @@ namespace TermProject.Winform
             }
             else
             {
-                MessageBox.Show("User not existed!Please register first!");
-                Nametext1.Clear();
+                MessageBox.Show("Wrong Password! Please enter again!");
                 Passtext1.Clear();
-                RegisterForm r = new RegisterForm(users);
-                r.ShowDialog();
+                return;
             }
         }
         private void Logbutton2_Click(object sender, EventArgs e)

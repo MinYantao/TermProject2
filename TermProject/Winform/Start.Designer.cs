@@ -37,47 +37,57 @@
             // 
             // InputSize
             // 
-            this.InputSize.Location = new System.Drawing.Point(650, 158);
+            this.InputSize.Font = new System.Drawing.Font("Goudy Old Style", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.InputSize.Location = new System.Drawing.Point(199, 53);
+            this.InputSize.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.InputSize.Name = "InputSize";
-            this.InputSize.Size = new System.Drawing.Size(100, 49);
+            this.InputSize.Size = new System.Drawing.Size(36, 22);
             this.InputSize.TabIndex = 0;
             this.InputSize.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.InputSize_KeyPress);
             // 
             // StartSizelal
             // 
             this.StartSizelal.AutoSize = true;
-            this.StartSizelal.Location = new System.Drawing.Point(543, 161);
+            this.StartSizelal.Font = new System.Drawing.Font("Goudy Old Style", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StartSizelal.Location = new System.Drawing.Point(172, 54);
+            this.StartSizelal.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.StartSizelal.Name = "StartSizelal";
-            this.StartSizelal.Size = new System.Drawing.Size(87, 36);
+            this.StartSizelal.Size = new System.Drawing.Size(25, 16);
             this.StartSizelal.TabIndex = 1;
             this.StartSizelal.Text = "Size";
             // 
             // StartModelal
             // 
             this.StartModelal.AutoSize = true;
-            this.StartModelal.Location = new System.Drawing.Point(90, 161);
+            this.StartModelal.Font = new System.Drawing.Font("Goudy Old Style", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StartModelal.Location = new System.Drawing.Point(30, 54);
+            this.StartModelal.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.StartModelal.Name = "StartModelal";
-            this.StartModelal.Size = new System.Drawing.Size(87, 36);
+            this.StartModelal.Size = new System.Drawing.Size(34, 16);
             this.StartModelal.TabIndex = 2;
             this.StartModelal.Text = "Mode";
             // 
             // ModeChoose
             // 
+            this.ModeChoose.Font = new System.Drawing.Font("Goudy Old Style", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ModeChoose.FormattingEnabled = true;
             this.ModeChoose.Items.AddRange(new object[] {
             "Go",
             "Five",
             "Reversi"});
-            this.ModeChoose.Location = new System.Drawing.Point(198, 158);
+            this.ModeChoose.Location = new System.Drawing.Point(66, 53);
+            this.ModeChoose.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.ModeChoose.Name = "ModeChoose";
-            this.ModeChoose.Size = new System.Drawing.Size(121, 44);
+            this.ModeChoose.Size = new System.Drawing.Size(43, 24);
             this.ModeChoose.TabIndex = 3;
             // 
             // StartBut
             // 
-            this.StartBut.Location = new System.Drawing.Point(303, 275);
+            this.StartBut.Font = new System.Drawing.Font("Goudy Old Style", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StartBut.Location = new System.Drawing.Point(101, 92);
+            this.StartBut.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.StartBut.Name = "StartBut";
-            this.StartBut.Size = new System.Drawing.Size(215, 86);
+            this.StartBut.Size = new System.Drawing.Size(72, 29);
             this.StartBut.TabIndex = 4;
             this.StartBut.Text = "Start";
             this.StartBut.UseVisualStyleBackColor = true;
@@ -85,14 +95,16 @@
             // 
             // Start
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(18F, 36F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(837, 450);
+            this.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.ClientSize = new System.Drawing.Size(279, 150);
             this.Controls.Add(this.StartBut);
             this.Controls.Add(this.ModeChoose);
             this.Controls.Add(this.StartModelal);
             this.Controls.Add(this.StartSizelal);
             this.Controls.Add(this.InputSize);
+            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Name = "Start";
             this.Text = "Start";
             this.ResumeLayout(false);

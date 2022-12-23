@@ -99,10 +99,10 @@ namespace TermProject.Winform
         /// <param name="user"></param>
         private void saveuser(User user)
         {
-            string filepath = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Users\\Users.txt";
-            FileStream aFile = new FileStream(filepath, FileMode.Append);
+            string name = user.getname()+".txt";
+            string filepath = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Users\\"+name;
+            FileStream aFile = new FileStream(filepath, FileMode.Create);
             StreamWriter sw = new StreamWriter(aFile);
-            sw.Write("\n");
             sw.Write(user.ToString());
             sw.Close();
         }

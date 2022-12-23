@@ -128,6 +128,14 @@ namespace TermProject
             record.Add(memento);
             current++;
         }
+        public void creatememento(Piece[,] past)
+        {
+            if (past == null)
+                return;
+            Memento memento = new Memento(past, board.getturns() - 2);
+            record.Add(memento);
+            current++;
+        }
         /// <summary>
         /// 恢复至某一状态
         /// </summary>
@@ -144,6 +152,7 @@ namespace TermProject
         {
             record.RemoveAt(--current);
         }
+        public List<Memento> getrecord() { return record; }
         /// <summary>
         /// 清除全部记录
         /// </summary>

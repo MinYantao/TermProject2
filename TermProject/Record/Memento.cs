@@ -26,5 +26,17 @@ namespace TermProject
         public int getturns() { return turns; }
         public void setcaps(List<Piece> caps) { this.caps = caps; }
         public void setlocation(Piece p) { this.location = p; }
+        public override string ToString()
+        {
+            if (location == null)
+                return null;
+            string s = location.ToString();
+            if (caps == null)
+                return s;
+            s += "&";
+            foreach (Piece p in caps)
+                s += ("/" + p.ToString());
+            return s;
+        }
     }
 }
