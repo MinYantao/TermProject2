@@ -128,11 +128,17 @@ namespace TermProject
             record.Add(memento);
             current++;
         }
-        public void creatememento(Piece[,] past)
+        public void creatememento(Piece[,] past,Piece p, List<Piece> caps)
         {
-            if (past == null)
-                return;
             Memento memento = new Memento(past, board.getturns() - 2);
+            memento.setcaps(caps);
+            memento.setlocation(p);
+            record.Add(memento);
+            current++;
+        }
+        public void creatememento(Piece p, List<Piece> caps, int turns)
+        {
+            Memento memento = new Memento(caps,p,turns);
             record.Add(memento);
             current++;
         }

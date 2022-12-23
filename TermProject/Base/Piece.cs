@@ -62,8 +62,16 @@ namespace TermProject
         //打印
         public override string ToString()
         {
-            string s = ""+x.ToString()+","+y.ToString()+","+color.ToString();
+            string s = x.ToString()+","+y.ToString()+","+color.ToString();
             return s;
+        }
+        public static Piece ToPiece(string s)
+        {
+            string[] ss = s.Split(',');
+            int x = Convert.ToInt32(ss[0]);
+            int y = Convert.ToInt32(ss[1]);
+            Color color = Board.colorfactory(ss[2]);
+            return new Piece(color, x, y);
         }
     }
     /// <summary>

@@ -19,24 +19,56 @@ namespace TermProject
         //创建备忘，棋面用深复制进行存储
         public Memento(Piece[,] pieces,int turns)
         {
-            this.pieces = (Piece[,])Clone.clone(pieces);
+            if(pieces!=null)
+                this.pieces = (Piece[,])Clone.clone(pieces);
             this.turns = turns+1;
         }
+        public Memento() { }
+        public Memento(List<Piece> caps, Piece location,int turns) 
+        { setlocation(location); setcaps(caps);this.turns = turns; }
         public Piece[,] getpieces() { return pieces; }
         public int getturns() { return turns; }
-        public void setcaps(List<Piece> caps) { this.caps = caps; }
-        public void setlocation(Piece p) { this.location = p; }
+        public List<Piece> getcaps() { return caps; }
+        public Piece getLocation() { return location;}
+        public void setpieces(Piece[,] ps) 
+        { 
+            if(ps!=null)
+                this.pieces= (Piece[,])Clone.clone(ps); }
+        public void setcaps(List<Piece> cs) 
+        { 
+            if(cs!=null)
+                this.caps = (List<Piece>)Clone.clone(cs); }
+        public void setlocation(Piece p) 
+        {
+            if (p != null)
+                this.location = (Piece)Clone.clone(p); }
         public override string ToString()
         {
             if (location == null)
-                return null;
+                return "null";
             string s = location.ToString();
             if (caps == null)
-                return s;
-            s += "&";
+                return s+"/null";
             foreach (Piece p in caps)
                 s += ("/" + p.ToString());
             return s;
+        }
+        public static Memento ToMemento(string m)
+        {
+            Memento memento = new Memento();
+            if(m=="null")
+                return memento;
+            string[] ms = m.Split('/');
+            memento.setlocation(Piece.ToPiece(ms[0]));
+            if (ms.Length==1)
+                return memento;
+            List<Piece> pieces = new List<Piece>();
+            for(int i = 1;i<ms.Length;i++)
+            {
+                pieces.Add(Piece.ToPiece(ms[i]));
+            }
+            memento.setcaps(pieces);
+            return memento;
         }
     }
 }

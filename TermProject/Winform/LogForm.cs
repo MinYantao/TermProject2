@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TermProject.Properties;
 
 namespace TermProject.Winform
 {
@@ -18,10 +19,10 @@ namespace TermProject.Winform
         private Validator validator;
         private Player blackone;
         private Player whiteone;
-        private string blackavator;
-        private string whiteavator;
+        private Image blackavator;
+        private Image whiteavator;
         public event EventHandler<Player[]> SendPlayers;//传递角色的事件
-        public event EventHandler<string[]> SendAvators;//传递头像的事件
+        public event EventHandler<Image[]> SendAvators;//传递头像的事件
         public LogForm()
         {
             InitializeComponent();
@@ -94,8 +95,8 @@ namespace TermProject.Winform
             ChooseType c = new ChooseType();
             c.ShowDialog();
             blackone = new AI(Board.getInstance(), Color.Black, c.gettype());
-            blackavator = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Others\\AI1.jpg";
-            User1.Image = System.Drawing.Image.FromFile(blackavator);
+            blackavator = Resources.AI1;
+            User1.Image = Resources.AI1;
             c.Close();
             hascreated();
         }
@@ -105,8 +106,8 @@ namespace TermProject.Winform
             ChooseType c = new ChooseType();
             c.ShowDialog();
             whiteone = new AI(Board.getInstance(), Color.White, c.gettype());
-            whiteavator = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Others\\AI2.jpg";
-            User2.Image = System.Drawing.Image.FromFile(whiteavator);
+            whiteavator = Resources.AI2;
+            User2.Image = Resources.AI2;
             c.Close();
             hascreated();
         }
@@ -118,15 +119,15 @@ namespace TermProject.Winform
         private void Notbutton1_Click(object sender, EventArgs e)
         {
             blackone = new Chessman(Board.getInstance(), Color.Black, new Visitor());
-            blackavator = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Others\\Visitor1.jpg";
-            User1.Image = System.Drawing.Image.FromFile(blackavator);
+            blackavator = Resources.Visitor1;
+            User1.Image = Resources.Visitor1;
             hascreated();
         }
         private void Notbutton2_Click(object sender, EventArgs e)
         {
             whiteone = new Chessman(Board.getInstance(), Color.White, new Visitor());
-            whiteavator = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Others\\Visitor2.jpg";
-            User2.Image = System.Drawing.Image.FromFile(whiteavator);
+            whiteavator = Resources.Visitor2;
+            User2.Image = Resources.Visitor2;
             hascreated();
         }
         /// <summary>
@@ -156,7 +157,9 @@ namespace TermProject.Winform
             {
                 MessageBox.Show("Succesfully login!");
                 blackone = new Chessman(Board.getInstance(), Color.Black, u);
-                blackavator = loadavator(name, User1);
+                try {blackavator = loadavator(name, User1); }
+                catch (Exception ex) 
+                { blackavator = Resources.User1;User1.Image = Resources.User1; }                
                 hascreated();
                 return;
             }
@@ -181,7 +184,9 @@ namespace TermProject.Winform
             {
                 MessageBox.Show("Succesfully login!");
                 whiteone = new Chessman(Board.getInstance(), Color.White, u);
-                whiteavator = loadavator(name, User2);
+                try { whiteavator = loadavator(name, User2); }
+                catch(Exception ex) 
+                { whiteavator = Resources.User2;User2.Image = Resources.User2; }
                 hascreated();
                 return;
             }
@@ -200,7 +205,7 @@ namespace TermProject.Winform
         /// 加载头像
         /// </summary>
         /// <param name="name"></param>
-        private string loadavator(string name, PictureBox user)
+        private Image loadavator(string name, PictureBox user)
         {
             string FileName = name + ".png";
             string DirName = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Avators";
@@ -217,7 +222,7 @@ namespace TermProject.Winform
                 if (filename.IndexOf(FileName) > -1)
                 {
                     user.Image = System.Drawing.Image.FromFile(fileinfo[i].FullName);//显示头像
-                    return fileinfo[i].FullName;
+                    return System.Drawing.Image.FromFile(fileinfo[i].FullName);
                 }
             }
             return null;
@@ -231,7 +236,7 @@ namespace TermProject.Winform
             if(blackone!=null&&whiteone!=null)
             {
                 SendPlayers(this,new Player[2] {blackone,whiteone});
-                String[] avators = new string[] { blackavator, whiteavator };
+                Image[] avators = new Image[] { blackavator, whiteavator };
                 SendAvators(this, avators);
                 this.Hide();
                 this.Close();

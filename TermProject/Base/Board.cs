@@ -211,7 +211,7 @@ namespace TermProject
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public Color colorfactory(string color)
+        public static Color colorfactory(string color)
         {
             switch(color) 
             {

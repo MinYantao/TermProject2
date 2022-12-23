@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -59,6 +60,8 @@ namespace TermProject
             }
             return whiteman;
         }
+
+        #region 下棋（包括胜负）
         /// <summary>
         /// 获取pass次数
         /// </summary>
@@ -75,11 +78,11 @@ namespace TermProject
         /// <returns></returns>
         public bool allforbidden()
         {
-            if(board.getstrategy()is ReversiStrategy)
+            if (board.getstrategy() is ReversiStrategy)
             {
-                return((ReversiStrategy)board.getstrategy()).allforbidden(board);
+                return ((ReversiStrategy)board.getstrategy()).allforbidden(board);
             }
-            if(board.getstrategy()is GoStrategy)
+            if (board.getstrategy() is GoStrategy)
             {
                 return ((GoStrategy)board.getstrategy()).allforbidden(board, (Chessman)getchessman());
             }
@@ -91,11 +94,11 @@ namespace TermProject
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public bool move(int x,int y, List<Piece> caps)
+        public bool move(int x, int y, List<Piece> caps)
         {
             bool canplace = false;
-            canplace = ((Chessman)getchessman()).move(x,y,caps);
-            countpass = 0;countundo= 0;
+            canplace = ((Chessman)getchessman()).move(x, y, caps);
+            countpass = 0; countundo = 0;
             return canplace;
         }
         /// <summary>
@@ -104,35 +107,41 @@ namespace TermProject
         /// <returns></returns>
         public int undo()
         {
-            if(getchessman().getcolor() == undocolor&&board.getturns()==undoturns)//是否连续两次都是同一方悔棋
+            try
             {
-                undocolor = Color.None;
-                return -1;
-            }
-            else
-            {
-                countundo++;
-                undocolor = getchessman().getcolor();
-                undoturns = board.getturns();
-                if (countundo == 2)//是否连续两次按悔棋按钮
+                if (getchessman().getcolor() == undocolor && board.getturns() == undoturns)//是否连续两次都是同一方悔棋
+                {
+                    undocolor = Color.None;
                     return -1;
-                else if (countpass > 0 || board.getturns() == 0)//是否刚开局或刚虚着，无棋可悔
-                    return 0;
-                else if(board.getturns() == 1)//刚下一步时悔棋
-                {
-                    board.clear();
-                    board.setturns(0);
-                    ((Chessman)getchessman()).removememento();
-                    board.getstrategy().init(board);
-                    return 1;
                 }
-                else//回复局面，清除记录
+                else
                 {
-                    ((Chessman)getchessman()).undo();
-                    ((Chessman)getchessman()).removememento();
-                    return 1;
+                    countundo++;
+                    undocolor = getchessman().getcolor();
+                    undoturns = board.getturns();
+                    if (countundo == 2)//是否连续两次按悔棋按钮
+                        return -1;
+                    else if (countpass > 0 || board.getturns() == 0)//是否刚开局或刚虚着，无棋可悔
+                        return 0;
+                    else if (board.getturns() == 1)//刚下一步时悔棋
+                    {
+                        board.clear();
+                        board.setturns(0);
+                        ((Chessman)getchessman()).removememento();
+                        board.getstrategy().init(board);
+                        return 1;
+                    }
+                    else//回复局面，清除记录
+                    {
+                        ((Chessman)getchessman()).undo();
+                        ((Chessman)getchessman()).removememento();
+                        return 1;
+                    }
                 }
-
+            }
+            catch(Exception e)
+            { 
+                return 0;
             }
         }
         /// <summary>
@@ -141,12 +150,12 @@ namespace TermProject
         public bool pass()
         {
             int havepassed = ((Chessman)getchessman()).pass();
-            switch (havepassed) 
+            switch (havepassed)
             {
                 case 0://五子棋返回0，表示不允许虚着
                     return false;
                 case 1:
-                    { 
+                    {
                         countpass++; countundo = 0;
                         return true;
                     }
@@ -164,7 +173,9 @@ namespace TermProject
                 return 1;
             else
                 return 2;
-        }
+        } 
+        #endregion
+
         /// <summary>
         /// 重新开始
         /// </summary>
@@ -223,10 +234,16 @@ namespace TermProject
                 FileStream aFile = new FileStream(filepath, FileMode.Create);
                 StreamWriter sw = new StreamWriter(aFile);
                 Piece[,] past = ((Chessman)getchessman()).getpast();
+                //写当前局面
                 string s = this.board.ToString();
+                //写当前棋手上一次落子后的局面（主要是为了围棋）
                 s += "past:\n";
-                if (past != null)
+                if (past == null)
                 {
+                    s += "null\n";
+                }
+                else
+                {                    
                     for (int i = 0; i < board.getsize(); i++)
                     {
                         for (int j = 0; j < board.getsize(); j++)
@@ -235,10 +252,29 @@ namespace TermProject
                             s += " ";
                         }
                         s += "\n";
+                    }                    
+                }
+                //写局面变化
+                s += "records:\n";
+                if (board.getturns() == 0)
+                    s += "null\n";
+                else if(board.getturns() == 1)
+                    s += ((Chessman)getoppositechessman()).getrecord()[0].ToString();
+                else
+                {
+                    List<Memento> l1 = ((Chessman)blackman).getrecord();
+                    List<Memento> l2 = ((Chessman)whiteman).getrecord();
+                    for (int i = 0; i < l1.Count; i++)
+                    {
+                        s += l1[i].ToString();
+                        s += "\n";
+                        if (i < l2.Count)
+                        {
+                            s += l2[i].ToString();
+                            s += "\n";
+                        }
                     }
                 }
-                else
-                    s += "null\n";
                 sw.Write(s);
                 sw.Close();
                 return true;
@@ -253,6 +289,7 @@ namespace TermProject
         /// </summary>
         public bool load(string path) 
         {
+            this.restart();
             try
             {
                 string name = blackman.getname() + "-" + whiteman.getname() + ".txt";
@@ -269,11 +306,20 @@ namespace TermProject
                         index=strs.Count;
                 }
                 aFile.Close();
+                //写入局面
                 List<String> boardlist = strs.GetRange(0,index-1);
                 board.toboard(boardlist);
-                List<String> past = strs.GetRange(index,strs.Count-index);
-                if (past[0] == "null")
-                    ((Chessman)getchessman()).creatememento(null);
+                blackman.setmode(board.getstrategy());
+                whiteman.setmode(board.getstrategy());
+                if (board.getturns() == 0)
+                    return true;
+                if(board.getturns() == 1)
+                {
+                    Memento me = Memento.ToMemento(strs[index+2]);
+                    ((Chessman)getoppositechessman()).creatememento(me.getLocation(),me.getcaps());
+                }
+                //写入past
+                List<String> past = strs.GetRange(index, board.getsize());
                 Piece[,] pieces = new Piece[board.getsize(), board.getsize()];
                 for (int i = 0; i < board.getsize(); i++)
                 {
@@ -281,11 +327,30 @@ namespace TermProject
                     for (int j = 0; j < board.getsize(); j++)
                     {
                         string color = strings[j].Split(',')[2];
-                        pieces[i, j] = new Piece(board.colorfactory(color), i, j);
+                        pieces[i, j] = new Piece(Board.colorfactory(color), i, j);
                     }
                 }
-                ((Chessman)getchessman()).creatememento(pieces);
-
+                //写入record
+                List<string> record = strs.GetRange(index+board.getsize()+1, board.getturns());
+                Memento memento;
+                for(int i = 0; i< record.Count; i++)
+                {
+                    memento = Memento.ToMemento(record[i]);
+                    if(i%2==0)
+                    {
+                        if (i == board.getturns() - 2)
+                            ((Chessman)blackman).creatememento(pieces, memento.getLocation(), memento.getcaps());
+                        else
+                            ((Chessman)blackman).creatememento(memento.getLocation(), memento.getcaps(), i);
+                    }
+                    else
+                    {
+                        if(i == board.getturns() - 2)
+                            ((Chessman)whiteman).creatememento(pieces, memento.getLocation(), memento.getcaps());
+                        else
+                            ((Chessman)whiteman).creatememento(memento.getLocation(), memento.getcaps(), i);
+                    }
+                }
                 return true;
             }
             catch { return false; }

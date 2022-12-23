@@ -38,6 +38,7 @@ namespace TermProject
         public void update()
         {
             this.size = board.getsize();
+            this.mode = board.getstrategy();
             lefttop = 220 - (size - 1) * unit / 2;
             g.Clear(System.Drawing.Color.LightSteelBlue);
         }

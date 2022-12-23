@@ -24,7 +24,8 @@ namespace TermProject.Winform
         private Facade facade;
         private Player black;
         private Player white;
-        private int forbidden; 
+        private int forbidden;
+        private Produce produce;
         #endregion
 
         #region 初始化页面
@@ -35,6 +36,7 @@ namespace TermProject.Winform
         public MainForm()
         {
             InitializeComponent();
+            Player1.Hide();
         }
         /// <summary>
         /// 接收传来的玩家角色,定制棋盘和头像
@@ -52,6 +54,7 @@ namespace TermProject.Winform
         {
             ShowName1.Text=black.getname();
             ShowName2.Text=white.getname();
+            ModeShow.Text=board.getstrategy().ToString();
             if(black is Chessman&&((Chessman)black).getidentity() is User)
             {
                 ShowCount1.Text = Convert.ToString(((User)(((Chessman)black).getidentity())).getcount(board.getstrategy()));
@@ -69,10 +72,10 @@ namespace TermProject.Winform
             if(draw!=null)
                 draw.drawboard();
         }
-        public void GetAvators(object sender, String[] Avators)
+        public void GetAvators(object sender, Image[] Avators)
         {
-            pictureBox1.Image = System.Drawing.Image.FromFile(Avators[0]);
-            pictureBox2.Image = System.Drawing.Image.FromFile(Avators[1]);
+            pictureBox1.Image = Avators[0];
+            pictureBox2.Image = Avators[1];
             this.facade = new Facade(board, black, white);
             Graphics g = this.CreateGraphics();
             draw = new Draw(board, g);
@@ -348,6 +351,8 @@ namespace TermProject.Winform
             }
             else
             {
+                if (produce.getstate())
+                    produce.stop();
                 string path = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Records";
                 if (!facade.save(path))
                     MessageBox.Show("Save failed!");
@@ -372,6 +377,7 @@ namespace TermProject.Winform
             draw.drawboard();
             draw.drawpieces();
             draw.showturn(board.getturns());
+            setinfo();
         }
         /// <summary>
         /// 重新开始游戏（重选模式，重新设置棋盘）（菜单栏Restart）
@@ -398,24 +404,83 @@ namespace TermProject.Winform
             else
             { play(); }
         }
-        /// <summary>
-        /// 开始录屏
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void startRecordToolStripMenuItem_Click(object sender, EventArgs e)
-        {
 
-        }        
+        #endregion
+
+        #region 录屏回放
         /// <summary>
-        /// 回放
+        /// 开始录制
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void playBackToolStripMenuItem_Click(object sender, EventArgs e)
+        private void RecordBtn_Click(object sender, EventArgs e)
         {
+            if ((black.getname().IndexOf("AI") > -1 || black.getname() == "Visitor") && (white.getname().IndexOf("AI") > -1 || white.getname() == "Visitor"))
+            {
+                MessageBox.Show("Can't record!");
+                return;
+            }
+            int left = this.Left + Player1.Left;
+            int top = this.Top + Player1.Top;
+            int width = Player1.Width;
+            int height = Player1.Height;
+            string name = black.getname() + "-" + white.getname() + ".avi";
+            string path = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Videos";
+            string filepath = Path.Combine(path, name);
+            produce = new Produce(left * 3, top * 3, width * 3 - 1, height * 3 - 1, filepath);
+            produce.start();
+        }
+        /// <summary>
+        /// 手动结束录制
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void End_Click(object sender, EventArgs e)
+        {
+            if (produce.getstate())
+                produce.stop();
+        }
+        /// <summary>
+        /// 播放录像
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartPlay_Click(object sender, EventArgs e)
+        {
+            if ((black.getname().IndexOf("AI") > -1 || black.getname() == "Visitor") && (white.getname().IndexOf("AI") > -1 || white.getname() == "Visitor"))
+            {
+                MessageBox.Show("No record!");
+                return;
+            }
+            string name = black.getname() + "-" + white.getname() + ".avi";
+            string path = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Videos";
+            string filepath = Path.Combine(path, name);
+            try
+            {
+                Player1.URL = filepath;
+                Player1.Show();
+                Player1.Ctlcontrols.play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("There has been no record to play!");
+                return;
+            }
 
         }
+        /// <summary>
+        /// 停止回放
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StopPlay_Click(object sender, EventArgs e)
+        {
+            Player1.Ctlcontrols.stop();
+            Player1.Hide();
+            draw.showturn(board.getturns());
+            draw.drawboard();
+            draw.drawpieces();
+        } 
         #endregion
     }
 }

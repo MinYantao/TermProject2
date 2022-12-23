@@ -24,7 +24,7 @@ namespace TermProject
             log.SendPlayers += new EventHandler<Player[]>(start.GetPlayers);
             log.SendPlayers += new EventHandler<Player[]>(mainform.GetPlayers);
             start.SendBoard += new EventHandler<Board>(mainform.GetBoard);
-            log.SendAvators += new EventHandler<string[]>(mainform.GetAvators);
+            log.SendAvators += new EventHandler<Image[]>(mainform.GetAvators);
             Application.Run(log);
             //Console.ReadKey();
         }
