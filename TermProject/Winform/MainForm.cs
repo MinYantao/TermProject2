@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,32 +16,67 @@ namespace TermProject.Winform
     /// </summary>
     public partial class MainForm : Form
     {
+        #region 属性
         private Draw draw;
         private Board board;
         private Facade facade;
         private Player black;
         private Player white;
-        private int forbidden;
+        private int forbidden; 
+        #endregion
+
+        #region 初始化页面
         /// <summary>
         /// 初始化主窗体
         /// </summary>
-        /// <param name="board"></param>
-        public MainForm(Board board,Player black,Player white)
-        {
-            InitializeComponent();
-            this.facade = new Facade(board,black, white);
-            this.board = board;
-            this.black = black;
-            this.white = white;
-            Graphics g = this.CreateGraphics();
-            draw = new Draw(board,g);
-            forbidden= 0;
-            play();
-        }
+        /// <param name="board"></param>        
         public MainForm()
         {
             InitializeComponent();
         }
+        /// <summary>
+        /// 接收传来的玩家角色,定制棋盘和头像
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="players"></param>
+        public void GetPlayers(object sender, Player[] players)
+        {
+            this.black = players[0];
+            this.white = players[1];
+            setinfo();
+        }
+        //设置局面玩家信息显示
+        public void setinfo()
+        {
+            ShowName1.Text=black.getname();
+            ShowName2.Text=white.getname();
+            if(black is Chessman&&((Chessman)black).getidentity() is User)
+            {
+                ShowCount1.Text = Convert.ToString(((User)(((Chessman)black).getidentity())).getcount(board.getstrategy()));
+                ShowWin1.Text = Convert.ToString(((User)(((Chessman)black).getidentity())).getwin(board.getstrategy()));
+            }
+            if (white is Chessman && ((Chessman)white).getidentity() is User)
+            {
+                ShowCount2.Text = Convert.ToString(((User)(((Chessman)white).getidentity())).getcount(board.getstrategy()));
+                ShowWin2.Text = Convert.ToString(((User)(((Chessman)white).getidentity())).getwin(board.getstrategy()));
+            }
+        }
+        public void GetBoard(object sender, Board board)
+        {
+            this.board = board; 
+            if(draw!=null)
+                draw.drawboard();
+        }
+        public void GetAvators(object sender, String[] Avators)
+        {
+            pictureBox1.Image = System.Drawing.Image.FromFile(Avators[0]);
+            pictureBox2.Image = System.Drawing.Image.FromFile(Avators[1]);
+            this.facade = new Facade(board, black, white);
+            Graphics g = this.CreateGraphics();
+            draw = new Draw(board, g);
+            forbidden = 0;
+            this.ShowDialog();
+        }        
         /// <summary>
         /// 绘制棋盘
         /// </summary>
@@ -50,8 +86,27 @@ namespace TermProject.Winform
         {
             draw.drawboard();
         }
+        #endregion
+
+        #region 对战及鼠标选点落子
         /// <summary>
-        /// 自动触发下棋
+        /// AI对战
+        /// </summary>
+        private void autoplay()
+        {
+            Piece location = facade.play();
+            if(location!=null)
+                draw.drawpiece(location);
+            while (!isover())
+            {
+                Thread.Sleep(1000);
+                location = facade.play();
+                if (location != null)
+                    draw.drawpiece(location);
+            }
+        }
+        /// <summary>
+        /// 人机或人人对战
         /// </summary>
         private void play()
         {
@@ -60,17 +115,18 @@ namespace TermProject.Winform
             {
                 forbidden++;
                 board.setturns();
-                if (forbidden==2)
+                if (forbidden == 2)
                 {
                     over();
-                }                
+                }
                 play();
             }
             Piece location = facade.play();
-            if(location != null) 
+            if (location != null)
             {
                 draw.drawpiece(location);
-                isover();
+                if (!isover())
+                    play();
             }
             return;
         }
@@ -83,83 +139,58 @@ namespace TermProject.Winform
         {
             Point p = e.Location;
             //判断选点是否在棋盘内
-            if(!draw.withinboard(p.X,p.Y))
+            if (!draw.withinboard(p.X, p.Y))
             {
                 MessageBox.Show("Please select point within the board!");
                 return;
             }
-            int x=0;
-            int y=0;
-            draw.getlocation(p.X,p.Y, out x, out y);
+            int x = 0;
+            int y = 0;
+            draw.getlocation(p.X, p.Y, out x, out y);
             //判断能否在选点落棋
-            if(!facade.move(x,y))
+            List<Piece> caps= new List<Piece>();
+            if (!facade.move(x, y,caps))
             {
                 MessageBox.Show("The piece cannot be placed on the point selected!");
                 return;
             }
             //落子
-            draw.drawpieces();
+            draw.drawpiece(board.getpieces()[x,y]);
+            draw.drawpieces(caps);
             //判断是否终局
-            isover();
-        }     
+            if(!isover())
+                play();
+        } 
+        #endregion
+
+        #region 终局判断及获胜方判断
         /// <summary>
         /// 判断是否终局
         /// </summary>
-        private void isover()
+        private bool isover()
         {
             int i = facade.isover();
-            if (i < 0)
+            if (i < 0)//未终局则增加轮数并调用下棋函数
             {
                 board.setturns();
                 draw.showturn(board.getturns());
-                play();
-                return;
+                return false;
             }
             else
             {
+                //终局则进行胜负判断，五子棋的终局判断函数可以直接返回胜负结果
+                //围棋、黑白棋还需计算
                 over(i);
-                return;
+                return true;
             }
-        }
-        /// <summary>
-        /// 虚着（pass按钮）
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PassBut_Click(object sender, EventArgs e)
-        {
-            if(facade.pass())
-            {
-                board.setturns();
-                if(facade.getpass()<2)
-                    draw.showturn(board.getturns());
-                else
-                {
-                    over();return;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Cannot pass in current mode!");
-            }
-            
         }
         /// <summary>
         /// 结束棋局，进行终局判断
         /// </summary>
-        private void over(int note=0)
+        private void over(int note = 0)
         {
-            if (black is Chessman)
-            {
-                if (((Chessman)black).getidentity() is User)
-                    ((User)(((Chessman)black).getidentity())).setcount(board.getstrategy());
-            }
-            if (white is Chessman)
-            {
-                if (((Chessman)white).getidentity() is User)
-                    ((User)(((Chessman)white).getidentity())).setcount(board.getstrategy());
-            }
             select(note);
+            setinfo();
             return;
         }
         //如果非终局，围棋和五子棋模式均传来-1；如果终局：
@@ -167,40 +198,64 @@ namespace TermProject.Winform
         //围棋的isover传递note=0，需要再调用facade.whowin，获取胜者
         public void select(int note)
         {
-            switch (note)
+            bool blackwin = false;
+            bool whitewin = false;
+            if (note != 0)
             {
-                case 1:
-                    {
-                        MessageBox.Show("Black win!");
-                        if(black is Chessman)
+                switch (note)
+                {
+                    case 1:
                         {
-                            if(((Chessman)black).getidentity() is User)
-                                ((User)(((Chessman)black).getidentity())).setwin(board.getstrategy());
+                            MessageBox.Show("Black win!");
+                            blackwin = true; break;
                         }
-                        return;
-                    }
-                case 2:
-                    {
-                        MessageBox.Show("White win!");
-                        if (white is Chessman)
+                    case 2:
                         {
-                            if (((Chessman)white).getidentity() is User)
-                                ((User)(((Chessman)white).getidentity())).setwin(board.getstrategy());
+                            MessageBox.Show("White win!");
+                            whitewin = true; break;
                         }
-                        return;
-                    }
-                case 3:
-                    {
-                        MessageBox.Show("A draw!"); return;
-                    }
-                default:
-                    {
-                        note = facade.whowin();
-                        select(note);
-                        return;
-                    }
+                    case 3:
+                        {
+                            MessageBox.Show("A draw!"); break;
+                        }
+                }
+                if (black is Chessman) { ((Chessman)black).irecord(blackwin); }
+                if (white is Chessman) { ((Chessman)white).irecord(whitewin); }
             }
+            else
+            {
+                note = facade.whowin();
+                select(note);
+            }
+
         }
+        #endregion
+
+        #region 页面右侧按钮
+        /// <summary>
+        /// 虚着（pass按钮）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PassBut_Click(object sender, EventArgs e)
+        {
+            if (facade.pass())
+            {
+                board.setturns();
+                if (facade.getpass() < 2)
+                    draw.showturn(board.getturns());
+                else
+                {
+                    over(); return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Cannot pass in current mode!");
+            }
+
+        }
+
         /// <summary>
         /// 悔棋一步（undo按钮）
         /// </summary>
@@ -249,8 +304,16 @@ namespace TermProject.Winform
             facade.restart();
             draw.drawpieces();
             draw.showturn(board.getturns());
-            play();
+            if (black is AI && white is AI)
+            {
+                autoplay();
+            }
+            else
+            { play(); }
         }
+        #endregion 
+
+        #region 菜单栏按钮
         /// <summary>
         /// 存档（菜单栏File-Save）
         /// </summary>
@@ -276,8 +339,8 @@ namespace TermProject.Winform
             dialog.Filter = "txt文件(*.*)|*.txt";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string file = dialog.FileName; 
-                if(!facade.load(file))
+                string file = dialog.FileName;
+                if (!facade.load(file))
                 {
                     MessageBox.Show("Load failed!");
                     return;
@@ -289,16 +352,30 @@ namespace TermProject.Winform
             }
         }
         /// <summary>
-        /// 重新开始游戏（重选模式，重新设置棋盘）
+        /// 重新开始游戏（重选模式，重新设置棋盘）（菜单栏Restart）
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void restartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            Start f = new Start(black,white);
+            Start f = new Start(black, white);
+            f.SendBoard += new EventHandler<Board>(this.GetBoard);
             f.ShowDialog();
-            this.Close();
         }
+        /// <summary>
+        /// 开始游戏,主要用于有AI时（菜单栏Start）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (black is AI && white is AI)
+            {
+                autoplay();
+            }
+            else
+            { play(); }
+        } 
+        #endregion
     }
 }

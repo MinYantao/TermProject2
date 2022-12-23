@@ -14,13 +14,18 @@ namespace TermProject
         [STAThreadAttribute]
         static void Main(string[] args)
         {
+            //创建窗体
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Strategy strategy = StrategyFactory.createstrategy("Five");
-            //Board board = Board.getInstance(strategy, 19);
-            //MainForm f = new MainForm(board);
-            //Application.Run(new MainForm());
-            Application.Run(new LogForm());
+            LogForm log = new LogForm();
+            Start start = new Start();
+            MainForm mainform = new MainForm();
+            //添加事件
+            log.SendPlayers += new EventHandler<Player[]>(start.GetPlayers);
+            log.SendPlayers += new EventHandler<Player[]>(mainform.GetPlayers);
+            start.SendBoard += new EventHandler<Board>(mainform.GetBoard);
+            log.SendAvators += new EventHandler<string[]>(mainform.GetAvators);
+            Application.Run(log);
             //Console.ReadKey();
         }
     }

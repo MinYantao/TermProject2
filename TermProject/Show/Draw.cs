@@ -6,6 +6,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TermProject
 {
@@ -83,6 +84,8 @@ namespace TermProject
         {
             SolidBrush brushb = new SolidBrush(System.Drawing.Color.Blue);
             SolidBrush brushw = new SolidBrush(System.Drawing.Color.White);
+            Pen bluePen = new Pen(System.Drawing.Color.Blue, 2);
+            Pen whitePen = new Pen(System.Drawing.Color.White, 2);
             //指示轮到白子
             if (turns%2!=0)
             {                
@@ -90,6 +93,8 @@ namespace TermProject
                 g.FillClosedCurve(brushb, points);
                 points = new Point[3] { new Point(180, 455), new Point(177, 465), new Point(183, 465) };
                 g.FillClosedCurve(brushw, points);
+                g.DrawLine(bluePen,432, 323, 432, 323+50+4);
+                g.DrawLine(whitePen, 432, 263, 432, 263+50 + 4);
             }
             else//轮到黑子
             {                
@@ -97,6 +102,8 @@ namespace TermProject
                 g.FillClosedCurve(brushb, points);
                 points = new Point[3] { new Point(280, 455), new Point(278, 465), new Point(282, 465) };
                 g.FillClosedCurve(brushw, points);
+                g.DrawLine(whitePen, 432, 323, 432, 323 + 50 + 4);
+                g.DrawLine(bluePen, 432, 263, 432, 263 + 50 + 4);
             }
 
         }
@@ -124,7 +131,7 @@ namespace TermProject
             else if(color == Color.None)//无子覆盖
             {
                 
-                SolidBrush brushcover = new SolidBrush(System.Drawing.Color.Bisque);
+                SolidBrush brushcover = new SolidBrush(System.Drawing.Color.LightSteelBlue);
                 g.FillEllipse(brushcover, X, Y, 2 * r, 2 * r);
             }
         }
@@ -152,6 +159,14 @@ namespace TermProject
                     drawpiece(temp);
                 }
             }
+        }
+        public void drawpieces(List<Piece> pieces)
+        {
+            if (pieces == null)
+                return;
+            if(pieces.Count == 0) return;
+            foreach (Piece p in pieces)
+                drawpiece(p);
         }
         /// <summary>
         /// 判断点是否在棋盘内

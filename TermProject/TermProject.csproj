@@ -77,6 +77,12 @@
     <Compile Include="Winform\ChooseForm.Designer.cs">
       <DependentUpon>ChooseForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Winform\ChooseType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Winform\ChooseType.Designer.cs">
+      <DependentUpon>ChooseType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Winform\LogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +118,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\ChooseForm.resx">
       <DependentUpon>ChooseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Winform\ChooseType.resx">
+      <DependentUpon>ChooseType.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Winform\LogForm.resx">
       <DependentUpon>LogForm.cs</DependentUpon>

@@ -22,44 +22,47 @@ namespace TermProject
             return;
         }
         /// <summary>
-        /// 获取块
+        /// 自动选点落子（暂不支持）
         /// </summary>
-        /// <param name="p"></param>
-        /// <param name="points"></param>
-        /// <param name="colors"></param>
-        /// <param name="orientation"></param>
+        /// <param name="board"></param>
         /// <returns></returns>
+        public override Piece autoplay(Board board,int type)
+        {
+            return null;
+        }
+
+        #region 获取块
         //提取某个棋子周围的块
-        public Group creategroup2(Board board, Piece p, bool[,] hasconnected=null)
+        public Group creategroup2(Board board, Piece p, bool[,] hasconnected = null)
         {
             int size = board.getsize();
-            if(hasconnected==null)
+            if (hasconnected == null)
                 hasconnected = new bool[size, size];
             List<Piece> ps = new List<Piece>();
             connect2(p, board, ps, hasconnected);
             Group group = new Group(ps, this);
-            if(group.getcolor()!=Color.None)
+            if (group.getcolor() != Color.None)
                 group.setkeynum(groupliberty(group, board));
             else
-                group.setkeynum(contactcolor(group,board));
+                group.setkeynum(contactcolor(group, board));
             return group;
         }
         //块连接（连通图）
-        public void connect2(Piece p,Board board, List<Piece> ps, bool[,] hasconnected)
+        public void connect2(Piece p, Board board, List<Piece> ps, bool[,] hasconnected)
         {
             ps.Add(p);
-            int x=p.getx();
-            int y=p.gety();
+            int x = p.getx();
+            int y = p.gety();
             Color color = p.getcolor();
-            hasconnected[x,y] = true;
-            if (canconnect(color, board, x - 1, y) && hasconnected[x-1,y]==false)
+            hasconnected[x, y] = true;
+            if (canconnect(color, board, x - 1, y) && hasconnected[x - 1, y] == false)
                 connect2(board.getpieces()[x - 1, y], board, ps, hasconnected);
             if (canconnect(color, board, x + 1, y) && hasconnected[x + 1, y] == false)
                 connect2(board.getpieces()[x + 1, y], board, ps, hasconnected);
-            if (canconnect(color, board, x , y- 1) && hasconnected[x , y- 1] == false)
-                connect2(board.getpieces()[x , y- 1], board, ps, hasconnected);
-            if (canconnect(color, board, x, y+1) && hasconnected[x , y+1] == false)
-                connect2(board.getpieces()[x , y+1], board, ps, hasconnected);
+            if (canconnect(color, board, x, y - 1) && hasconnected[x, y - 1] == false)
+                connect2(board.getpieces()[x, y - 1], board, ps, hasconnected);
+            if (canconnect(color, board, x, y + 1) && hasconnected[x, y + 1] == false)
+                connect2(board.getpieces()[x, y + 1], board, ps, hasconnected);
             return;
         }
         //返回整个棋盘的块
@@ -73,45 +76,42 @@ namespace TermProject
             {
                 for (int j = 0; j < board.getsize(); j++)
                 {
-                    if (hasconnected[i,j]!=true)
+                    if (hasconnected[i, j] != true)
                         groups.Add(creategroup2(board, pieces[i, j], hasconnected));
                 }
             }
             return groups;
         }
-        /// <summary>
-        /// 数气
-        /// </summary>
-        /// <param name="group"></param>
-        /// <param name="board"></param>
-        /// <returns></returns>
+        #endregion
+
+        #region 数气
         //数块的气
         public int groupliberty(Group group, Board board)
         {
             int liberty = 0;
-            double[,] counts = new double[board.getsize(),board.getsize()];
-            foreach(Piece p in group.getpieces())  
-                pieceliberty(p, board,counts);
-            for(int i=0;i<board.getsize();i++)
+            double[,] counts = new double[board.getsize(), board.getsize()];
+            foreach (Piece p in group.getpieces())
+                pieceliberty(p, board, counts);
+            for (int i = 0; i < board.getsize(); i++)
             {
-                for(int j = 0; j<board.getsize();j++)
+                for (int j = 0; j < board.getsize(); j++)
                 {
                     if (counts[i, j] != 0)
                     {
                         liberty++;
-                        group.addliberty(board.getpieces()[i,j]);
-                    }                        
+                        group.addliberty(board.getpieces()[i, j]);
+                    }
                 }
             }
             return liberty;
         }
         //数单个棋子的气
-        public int pieceliberty(Piece p, Board board, double[,] counts=null)
+        public int pieceliberty(Piece p, Board board, double[,] counts = null)
         {
-            if(counts==null)
-                counts = new double[board.getsize(),board.getsize()];
+            if (counts == null)
+                counts = new double[board.getsize(), board.getsize()];
             int liberty = 0;
-            if (isliberty(p.getx() - 1, p.gety(),board))
+            if (isliberty(p.getx() - 1, p.gety(), board))
             {
                 liberty++;
                 counts[p.getx() - 1, p.gety()]++;
@@ -119,31 +119,33 @@ namespace TermProject
             if (isliberty(p.getx(), p.gety() + 1, board))
             {
                 liberty++;
-                counts[p.getx(), p.gety() + 1] ++;
+                counts[p.getx(), p.gety() + 1]++;
             }
             if (isliberty(p.getx() + 1, p.gety(), board))
             {
                 liberty++;
-                counts[p.getx() + 1, p.gety()] ++;
+                counts[p.getx() + 1, p.gety()]++;
             }
             if (isliberty(p.getx(), p.gety() - 1, board))
             {
                 liberty++;
-                counts[p.getx(), p.gety() - 1] ++;
+                counts[p.getx(), p.gety() - 1]++;
             }
             return liberty;
         }
         //判断是否是气（某位置合法且无色）
-        public bool isliberty(int x,int y,Board board)
+        public bool isliberty(int x, int y, Board board)
         {
             bool isliberty = false;
-            if(withinboard(x,y,board)) 
+            if (withinboard(x, y, board))
             {
-                if (board.getpieces()[x,y].getcolor()==Color.None)
-                    isliberty= true;
+                if (board.getpieces()[x, y].getcolor() == Color.None)
+                    isliberty = true;
             }
             return isliberty;
-        }
+        } 
+        #endregion
+
         /// <summary>
         /// 判断无色棋块可以直接到达的颜色
         /// </summary>
@@ -154,6 +156,8 @@ namespace TermProject
         public int contactcolor(Group group,Board board)
         {
             List<Piece> around = getaround(group,board);
+            if(around.Count== 0)
+                return 3;
             Color color = around[0].getcolor();
             foreach(Piece p in around)
             {
@@ -217,43 +221,40 @@ namespace TermProject
             }
             return isaround;
         }
-        /// <summary>
-        /// 胜负判断
-        /// </summary>
-        /// <param name="board"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+
+
+        #region 胜负判断
         //黑胜为1，白胜为2，平局为3
         //判断规则：某一方的点数等于此方颜色的点数加上只“到达”这一颜色的空色点数，点数高的一方获胜
         public override int situationjudgement(Board board)
         {
             cleardead(board);
-            List<Group> groups= new List<Group>();
+            List<Group> groups = new List<Group>();
             groups = getgroups2(board);
             int countblack = 0;
             int countwhite = 0;
-            foreach(Group group in groups)
+            foreach (Group group in groups)
             {
-                if(group.getcolor()==Color.None)
+                if (group.getcolor() == Color.None)
                 {
                     int count = group.getkeynum();
                     switch (count)
                     {
                         case 1:
                             {
-                                countblack += group.getpieces().Count;break;
+                                countblack += group.getpieces().Count; break;
                             }
                         case 2:
                             {
                                 countwhite += group.getpieces().Count; break;
                             }
-                        default:break;
+                        default: break;
                     }
                 }
-                else if(group.getcolor() == Color.Black)
-                    countblack+= group.getpieces().Count;
+                else if (group.getcolor() == Color.Black)
+                    countblack += group.getpieces().Count;
                 else
-                    countwhite+= group.getpieces().Count;
+                    countwhite += group.getpieces().Count;
             }
             if (countblack > countwhite)
                 return 1;
@@ -267,20 +268,20 @@ namespace TermProject
             List<Group> groups = new List<Group>();
             groups = getgroups2(board);
             Color[,] colors = board.getcolors();
-            foreach(Group group in groups)
+            foreach (Group group in groups)
             {
                 if (group.getcolor() == Color.None)
                     continue;
-                if(group.getkeynum()==0|| group.getkeynum() == 1)
+                if (group.getkeynum() == 0 || group.getkeynum() == 1)
                 {
-                    setdead(group, colors);continue;
+                    setdead(group, colors); continue;
                 }
-                if(group.getkeynum() == 2&&!islive(group,board))
+                if (group.getkeynum() == 2 && !islive(group, board))
                 {
-                    setdead(group, colors); 
+                    setdead(group, colors);
                 }
             }
-            for(int i =0;i<board.getsize();i++)
+            for (int i = 0; i < board.getsize(); i++)
             {
                 for (int j = 0; j < board.getsize(); j++)
                     if (colors[i, j] == Color.None)
@@ -288,24 +289,25 @@ namespace TermProject
             }
         }
         // 标记死棋
-        public void setdead(Group group,Color[,] colors)
+        public void setdead(Group group, Color[,] colors)
         {
-            foreach(Piece p in group.getpieces())
-                colors[p.getx(),p.gety()] = Color.None;
+            foreach (Piece p in group.getpieces())
+                colors[p.getx(), p.gety()] = Color.None;
         }
         // 根据是否（至少）有两个禁入点判断是否为活棋
-        public bool islive(Group group,Board board)
+        public bool islive(Group group, Board board)
         {
             Piece[,] current = (Piece[,])Clone.clone(board.getpieces());
-            Color color=group.getcolor();
-            if (color==Color.Black)
-                color= Color.White;
+            Color color = group.getcolor();
+            if (color == Color.Black)
+                color = Color.White;
             else
                 color = Color.Black;
             int count = 0;
             foreach (Piece p in group.getliberty())
             {
-                if(issuicide(p.getx(),p.gety(),board,color))
+                List<Piece> c = new List<Piece>();
+                if (issuicide(p.getx(), p.gety(), board,c, color))
                 {
                     count++;
                     board.setpieces(current);
@@ -316,50 +318,51 @@ namespace TermProject
                     board.setpieces(current);
             }
             return false;
-        }        
-        /// <summary>
-        /// 禁着点判断,能下就下了顺便提子，不能就提醒重下
-        /// </summary>
-        /// <param name="p"></param>
-        /// <param name="board"></param>
-        /// <returns></returns>
-        public override bool forbiddenjudgement(int x,int y, Board board, Piece[,] past)
+        }
+        #endregion
+
+
+        #region 禁着点判断,能下就下了顺便提子，不能就提醒重下
+        public override bool forbiddenjudgement(int x, int y, Board board, Piece[,] past, List<Piece> caps=null)
         {
             bool forbidden = false;
             Piece[,] current = (Piece[,])Clone.clone(board.getpieces());
-            if(!isblank(x,y,board))
+            if (!isblank(x, y, board))
             {
                 forbidden = true;
+                caps = null;
                 return forbidden;
             }
-            if(issuicide(x, y,board))
+            if (issuicide(x, y, board,caps))
             {
                 forbidden = true;
                 board.setpieces(current);
                 return forbidden;
-            }            
-            if(isko(board,past))
+            }
+            if (isko(board, past))
             {
                 forbidden = true;
+                caps = null;
                 board.setpieces(current);
             }
             return forbidden;
         }
         //判断选择落点是否已有棋子        
         //判断选择落点是否“自杀”，顺便提子
-        public bool issuicide(int x, int y,Board board,Color color=Color.None)
+        public bool issuicide(int x, int y, Board board, List<Piece> caps=null,Color color = Color.None )
         {
-            if(color== Color.None)
+            if (color == Color.None)
                 board.placepiece(x, y, board.getcolor());
             else
                 board.placepiece(x, y, color);
             bool issuicide = false;
             Piece p = board.getpieces()[x, y];
             Group group = creategroup2(board, p);
-            bool cancapture = capture(group, board);
-            if (group.getkeynum() == 0&&(!cancapture))
+            bool cancapture = capture(group, board,caps);
+            if (group.getkeynum() == 0 && (!cancapture))
             {
-                    issuicide= true;
+                issuicide = true;
+                caps= null;
             }
             return issuicide;
         }
@@ -367,15 +370,16 @@ namespace TermProject
         public bool isko(Board board, Piece[,] points)
         {
             return board.equal(points);
-        }
-        
+        } 
+        #endregion
+
         /// <summary>
         /// 提子
         /// </summary>
         /// <param name="group"></param>
         /// <param name="board"></param>
         /// <returns></returns>
-        public bool capture(Group group, Board board)
+        public bool capture(Group group, Board board, List<Piece> caps)
         {
             bool cancapture = false;
             List<Piece> around = getaround(group, board);
@@ -388,7 +392,13 @@ namespace TermProject
             if (groups.Count > 0)
             {
                 foreach (Group g in groups)
-                    g.clear();
+                {
+                    foreach(Piece piece in g.getpieces())
+                    {
+                        piece.clear();
+                        caps.Add(piece);
+                    }                    
+                }                    
                 cancapture= true;
             }
             return cancapture;
@@ -438,7 +448,7 @@ namespace TermProject
                 for (int j = 0; j < size; j++)
                 {
                     Piece[,] past = chessman.getpast();
-                    if (!forbiddenjudgement(i, j, board, past))
+                    if (!forbiddenjudgement(i, j, board,past))
                     {
                         board.setpieces(current);
                         return false;

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +35,14 @@ namespace TermProject
         }
         public Identity getidentity() { return identity; }
         /// <summary>
+        /// 返回角色名称
+        /// </summary>
+        /// <returns></returns>
+        public override string getname()
+        {
+            return identity.getname();
+        }
+        /// <summary>
         /// 不可自动下棋
         /// </summary>
         /// <returns></returns>
@@ -58,7 +68,7 @@ namespace TermProject
         {
             if (mode.pass()>0)
             {
-                creatememento();
+                creatememento(null,null);
             }
             return mode.pass();
         }
@@ -68,14 +78,14 @@ namespace TermProject
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public bool move(int x,int y)
+        public bool move(int x,int y,List<Piece> caps)
         {
             bool isforbidden = false;
             Piece[,] past = getpast();
-            isforbidden = mode.forbiddenjudgement(x, y, board, past);
+            isforbidden = mode.forbiddenjudgement(x, y, board, past,caps);
             if(!isforbidden)
             {
-                creatememento();
+                creatememento(board.getpieces()[x,y],caps);
                 return true;
             }
             return false;
@@ -110,9 +120,11 @@ namespace TermProject
         /// <summary>
         /// 创建备忘并记录
         /// </summary>
-        public void creatememento()
+        public void creatememento(Piece p,List<Piece> caps)
         {
             Memento memento = board.creatememento();
+            memento.setcaps(caps);
+            memento.setlocation(p);
             record.Add(memento);
             current++;
         }

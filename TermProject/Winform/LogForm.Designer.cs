@@ -57,6 +57,7 @@
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -80,15 +81,17 @@
             this.splitContainer1.Panel2.Controls.Add(this.Passlabel2);
             this.splitContainer1.Panel2.Controls.Add(this.Namelabel2);
             this.splitContainer1.Panel2.Controls.Add(this.User2);
-            this.splitContainer1.Size = new System.Drawing.Size(1343, 1072);
-            this.splitContainer1.SplitterDistance = 660;
+            this.splitContainer1.Size = new System.Drawing.Size(428, 234);
+            this.splitContainer1.SplitterDistance = 210;
+            this.splitContainer1.SplitterWidth = 1;
             this.splitContainer1.TabIndex = 0;
             // 
             // AIbutton1
             // 
-            this.AIbutton1.Location = new System.Drawing.Point(32, 30);
+            this.AIbutton1.Location = new System.Drawing.Point(11, 10);
+            this.AIbutton1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.AIbutton1.Name = "AIbutton1";
-            this.AIbutton1.Size = new System.Drawing.Size(161, 82);
+            this.AIbutton1.Size = new System.Drawing.Size(54, 27);
             this.AIbutton1.TabIndex = 10;
             this.AIbutton1.Text = "AI";
             this.AIbutton1.UseVisualStyleBackColor = true;
@@ -96,9 +99,10 @@
             // 
             // Logbutton1
             // 
-            this.Logbutton1.Location = new System.Drawing.Point(367, 582);
+            this.Logbutton1.Location = new System.Drawing.Point(122, 194);
+            this.Logbutton1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Logbutton1.Name = "Logbutton1";
-            this.Logbutton1.Size = new System.Drawing.Size(135, 65);
+            this.Logbutton1.Size = new System.Drawing.Size(45, 22);
             this.Logbutton1.TabIndex = 8;
             this.Logbutton1.Text = "Log";
             this.Logbutton1.UseVisualStyleBackColor = true;
@@ -106,9 +110,10 @@
             // 
             // Notbutton1
             // 
-            this.Notbutton1.Location = new System.Drawing.Point(112, 582);
+            this.Notbutton1.Location = new System.Drawing.Point(24, 194);
+            this.Notbutton1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Notbutton1.Name = "Notbutton1";
-            this.Notbutton1.Size = new System.Drawing.Size(153, 65);
+            this.Notbutton1.Size = new System.Drawing.Size(64, 22);
             this.Notbutton1.TabIndex = 7;
             this.Notbutton1.Text = "Not Log";
             this.Notbutton1.UseVisualStyleBackColor = true;
@@ -116,49 +121,57 @@
             // 
             // Passtext1
             // 
-            this.Passtext1.Location = new System.Drawing.Point(317, 497);
+            this.Passtext1.Location = new System.Drawing.Point(106, 166);
+            this.Passtext1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Passtext1.Name = "Passtext1";
-            this.Passtext1.Size = new System.Drawing.Size(185, 49);
+            this.Passtext1.PasswordChar = '*';
+            this.Passtext1.Size = new System.Drawing.Size(64, 21);
             this.Passtext1.TabIndex = 6;
             // 
             // Nametext1
             // 
-            this.Nametext1.Location = new System.Drawing.Point(317, 431);
+            this.Nametext1.Location = new System.Drawing.Point(106, 144);
+            this.Nametext1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Nametext1.Name = "Nametext1";
-            this.Nametext1.Size = new System.Drawing.Size(185, 49);
+            this.Nametext1.Size = new System.Drawing.Size(64, 21);
             this.Nametext1.TabIndex = 5;
             // 
             // Passlabel1
             // 
             this.Passlabel1.AutoSize = true;
-            this.Passlabel1.Location = new System.Drawing.Point(106, 497);
+            this.Passlabel1.Location = new System.Drawing.Point(35, 166);
+            this.Passlabel1.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.Passlabel1.Name = "Passlabel1";
-            this.Passlabel1.Size = new System.Drawing.Size(159, 36);
+            this.Passlabel1.Size = new System.Drawing.Size(53, 12);
             this.Passlabel1.TabIndex = 4;
             this.Passlabel1.Text = "Password";
             // 
             // Namelabel1
             // 
             this.Namelabel1.AutoSize = true;
-            this.Namelabel1.Location = new System.Drawing.Point(106, 431);
+            this.Namelabel1.Location = new System.Drawing.Point(35, 144);
+            this.Namelabel1.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.Namelabel1.Name = "Namelabel1";
-            this.Namelabel1.Size = new System.Drawing.Size(87, 36);
+            this.Namelabel1.Size = new System.Drawing.Size(29, 12);
             this.Namelabel1.TabIndex = 3;
             this.Namelabel1.Text = "Name";
             // 
             // User1
             // 
-            this.User1.Location = new System.Drawing.Point(212, 155);
+            this.User1.Location = new System.Drawing.Point(71, 52);
+            this.User1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.User1.Name = "User1";
-            this.User1.Size = new System.Drawing.Size(220, 220);
+            this.User1.Size = new System.Drawing.Size(73, 73);
+            this.User1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.User1.TabIndex = 0;
             this.User1.TabStop = false;
             // 
             // AIbutton2
             // 
-            this.AIbutton2.Location = new System.Drawing.Point(59, 30);
+            this.AIbutton2.Location = new System.Drawing.Point(20, 10);
+            this.AIbutton2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.AIbutton2.Name = "AIbutton2";
-            this.AIbutton2.Size = new System.Drawing.Size(161, 82);
+            this.AIbutton2.Size = new System.Drawing.Size(54, 27);
             this.AIbutton2.TabIndex = 11;
             this.AIbutton2.Text = "AI";
             this.AIbutton2.UseVisualStyleBackColor = true;
@@ -166,9 +179,10 @@
             // 
             // Logbutton2
             // 
-            this.Logbutton2.Location = new System.Drawing.Point(406, 582);
+            this.Logbutton2.Location = new System.Drawing.Point(135, 194);
+            this.Logbutton2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Logbutton2.Name = "Logbutton2";
-            this.Logbutton2.Size = new System.Drawing.Size(135, 65);
+            this.Logbutton2.Size = new System.Drawing.Size(45, 22);
             this.Logbutton2.TabIndex = 9;
             this.Logbutton2.Text = "Log";
             this.Logbutton2.UseVisualStyleBackColor = true;
@@ -176,9 +190,10 @@
             // 
             // Notbutton2
             // 
-            this.Notbutton2.Location = new System.Drawing.Point(164, 582);
+            this.Notbutton2.Location = new System.Drawing.Point(40, 194);
+            this.Notbutton2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Notbutton2.Name = "Notbutton2";
-            this.Notbutton2.Size = new System.Drawing.Size(153, 65);
+            this.Notbutton2.Size = new System.Drawing.Size(66, 22);
             this.Notbutton2.TabIndex = 8;
             this.Notbutton2.Text = "Not Log";
             this.Notbutton2.UseVisualStyleBackColor = true;
@@ -186,50 +201,58 @@
             // 
             // Passtext2
             // 
-            this.Passtext2.Location = new System.Drawing.Point(356, 497);
+            this.Passtext2.Location = new System.Drawing.Point(119, 166);
+            this.Passtext2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Passtext2.Name = "Passtext2";
-            this.Passtext2.Size = new System.Drawing.Size(185, 49);
+            this.Passtext2.PasswordChar = '*';
+            this.Passtext2.Size = new System.Drawing.Size(64, 21);
             this.Passtext2.TabIndex = 7;
             // 
             // Nametext2
             // 
-            this.Nametext2.Location = new System.Drawing.Point(356, 431);
+            this.Nametext2.Location = new System.Drawing.Point(119, 144);
+            this.Nametext2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Nametext2.Name = "Nametext2";
-            this.Nametext2.Size = new System.Drawing.Size(185, 49);
+            this.Nametext2.Size = new System.Drawing.Size(64, 21);
             this.Nametext2.TabIndex = 6;
             // 
             // Passlabel2
             // 
             this.Passlabel2.AutoSize = true;
-            this.Passlabel2.Location = new System.Drawing.Point(158, 497);
+            this.Passlabel2.Location = new System.Drawing.Point(53, 166);
+            this.Passlabel2.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.Passlabel2.Name = "Passlabel2";
-            this.Passlabel2.Size = new System.Drawing.Size(159, 36);
+            this.Passlabel2.Size = new System.Drawing.Size(53, 12);
             this.Passlabel2.TabIndex = 4;
             this.Passlabel2.Text = "Password";
             // 
             // Namelabel2
             // 
             this.Namelabel2.AutoSize = true;
-            this.Namelabel2.Location = new System.Drawing.Point(158, 431);
+            this.Namelabel2.Location = new System.Drawing.Point(53, 144);
+            this.Namelabel2.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.Namelabel2.Name = "Namelabel2";
-            this.Namelabel2.Size = new System.Drawing.Size(87, 36);
+            this.Namelabel2.Size = new System.Drawing.Size(29, 12);
             this.Namelabel2.TabIndex = 3;
             this.Namelabel2.Text = "Name";
             // 
             // User2
             // 
-            this.User2.Location = new System.Drawing.Point(272, 155);
+            this.User2.Location = new System.Drawing.Point(79, 52);
+            this.User2.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.User2.Name = "User2";
-            this.User2.Size = new System.Drawing.Size(220, 220);
+            this.User2.Size = new System.Drawing.Size(73, 73);
+            this.User2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.User2.TabIndex = 0;
             this.User2.TabStop = false;
             // 
             // LogForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(18F, 36F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1343, 1072);
+            this.ClientSize = new System.Drawing.Size(428, 234);
             this.Controls.Add(this.splitContainer1);
+            this.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
             this.Name = "LogForm";
             this.Text = "LogForm";
             this.Load += new System.EventHandler(this.LogForm_Load);

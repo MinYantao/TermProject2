@@ -23,5 +23,6 @@ namespace TermProject
         /// <returns></returns>
         public Color getcolor() { return color; }
         public abstract Piece play();
+        public abstract string getname();
     }
 }

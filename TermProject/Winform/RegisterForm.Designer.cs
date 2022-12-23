@@ -42,16 +42,16 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(383, 121);
+            this.pictureBox1.Location = new System.Drawing.Point(255, 66);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(269, 241);
+            this.pictureBox1.Size = new System.Drawing.Size(270, 240);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // Rbutton1
             // 
-            this.Rbutton1.Location = new System.Drawing.Point(308, 687);
+            this.Rbutton1.Location = new System.Drawing.Point(204, 600);
             this.Rbutton1.Name = "Rbutton1";
             this.Rbutton1.Size = new System.Drawing.Size(390, 75);
             this.Rbutton1.TabIndex = 14;
@@ -61,22 +61,23 @@
             // 
             // Passtext1
             // 
-            this.Passtext1.Location = new System.Drawing.Point(521, 501);
+            this.Passtext1.Location = new System.Drawing.Point(396, 432);
             this.Passtext1.Name = "Passtext1";
-            this.Passtext1.Size = new System.Drawing.Size(305, 49);
+            this.Passtext1.PasswordChar = '*';
+            this.Passtext1.Size = new System.Drawing.Size(304, 49);
             this.Passtext1.TabIndex = 13;
             // 
             // Nametext1
             // 
-            this.Nametext1.Location = new System.Drawing.Point(521, 435);
+            this.Nametext1.Location = new System.Drawing.Point(396, 366);
             this.Nametext1.Name = "Nametext1";
-            this.Nametext1.Size = new System.Drawing.Size(305, 49);
+            this.Nametext1.Size = new System.Drawing.Size(304, 49);
             this.Nametext1.TabIndex = 12;
             // 
             // Passlabel1
             // 
             this.Passlabel1.AutoSize = true;
-            this.Passlabel1.Location = new System.Drawing.Point(166, 514);
+            this.Passlabel1.Location = new System.Drawing.Point(36, 459);
             this.Passlabel1.Name = "Passlabel1";
             this.Passlabel1.Size = new System.Drawing.Size(159, 36);
             this.Passlabel1.TabIndex = 11;
@@ -85,7 +86,7 @@
             // Namelabel1
             // 
             this.Namelabel1.AutoSize = true;
-            this.Namelabel1.Location = new System.Drawing.Point(166, 448);
+            this.Namelabel1.Location = new System.Drawing.Point(36, 393);
             this.Namelabel1.Name = "Namelabel1";
             this.Namelabel1.Size = new System.Drawing.Size(87, 36);
             this.Namelabel1.TabIndex = 10;
@@ -93,15 +94,16 @@
             // 
             // Passtext2
             // 
-            this.Passtext2.Location = new System.Drawing.Point(521, 570);
+            this.Passtext2.Location = new System.Drawing.Point(396, 501);
             this.Passtext2.Name = "Passtext2";
-            this.Passtext2.Size = new System.Drawing.Size(305, 49);
+            this.Passtext2.PasswordChar = '*';
+            this.Passtext2.Size = new System.Drawing.Size(304, 49);
             this.Passtext2.TabIndex = 16;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(166, 570);
+            this.label1.Location = new System.Drawing.Point(36, 516);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(303, 36);
             this.label1.TabIndex = 15;
@@ -109,9 +111,9 @@
             // 
             // UpLoadbtn
             // 
-            this.UpLoadbtn.Location = new System.Drawing.Point(681, 302);
+            this.UpLoadbtn.Location = new System.Drawing.Point(552, 249);
             this.UpLoadbtn.Name = "UpLoadbtn";
-            this.UpLoadbtn.Size = new System.Drawing.Size(155, 60);
+            this.UpLoadbtn.Size = new System.Drawing.Size(183, 60);
             this.UpLoadbtn.TabIndex = 17;
             this.UpLoadbtn.Text = "Up Load";
             this.UpLoadbtn.UseVisualStyleBackColor = true;
@@ -121,7 +123,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(18F, 36F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1070, 880);
+            this.ClientSize = new System.Drawing.Size(882, 735);
             this.Controls.Add(this.UpLoadbtn);
             this.Controls.Add(this.Passtext2);
             this.Controls.Add(this.label1);

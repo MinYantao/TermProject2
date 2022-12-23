@@ -9,6 +9,10 @@ namespace TermProject
 {
     public class ReversiStrategy:Strategy
     {
+        /// <summary>
+        /// 棋盘初始化
+        /// </summary>
+        /// <param name="board"></param>
         public override void init(Board board)
         {
             Piece[,] pieces = board.getpieces();
@@ -17,6 +21,15 @@ namespace TermProject
             board.placepiece(size / 2, size / 2, Color.White);
             board.placepiece(size / 2 - 1, size / 2, Color.Black);
             board.placepiece(size / 2 , size / 2- 1, Color.Black);
+        }
+        /// <summary>
+        /// 自动选点落子（暂不支持）
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public override Piece autoplay(Board board,int type)
+        {
+            return null;
         }
         /// <summary>
         /// 提取从某点沿特定方向出发，可终止于同色点，且所“夹”点均为反色点的串
@@ -111,10 +124,11 @@ namespace TermProject
         /// <param name="past"></param>
         /// <param name="isundo"></param>
         /// <returns></returns>
-        public override bool forbiddenjudgement(int x, int y, Board board, Piece[,] past=null)
+        public override bool forbiddenjudgement(int x, int y, Board board, Piece[,] past=null, List<Piece> caps = null)
         {
             if (!isblank(x, y, board))
             {
+                caps = null;
                 return true;
             }
             Color color = board.getcolor();
@@ -124,14 +138,17 @@ namespace TermProject
             if (groups.Count == 0)
             {
                 board.placepiece(x, y, Color.None);
+                caps= null;
                 return true;
             }
+            if (caps == null)
+                caps= new List<Piece>();
             foreach (Group g in groups)
             {
                 List<Piece> ps = g.getpieces();
                 for(int i = 1; i< ps.Count-1;i++)
                 {
-
+                    caps.Add(ps[i]);
                     board.placepiece(ps[i].getx(), ps[i].gety(), color);
                 }
             }

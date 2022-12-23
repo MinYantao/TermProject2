@@ -8,12 +8,26 @@ namespace TermProject
 {
     public class AI:Player
     {
+        private int type;//AI类型
         public AI() { }
-        public AI(Board board ,Color color) { this.board = board;this.color = color;}
+        public AI(Board board ,Color color,int type) 
+        { this.board = board;this.color = color;this.mode = new FiveStrategy();this.type = type; }
+        /// <summary>
+        /// /返回落点位置
+        /// </summary>
+        /// <returns></returns>
         public override Piece play() 
         {
-            Piece location = new Piece(color,0,0);
+            Piece location = mode.autoplay(board,type);
             return location;
+        }
+        /// <summary>
+        /// 返回角色名称
+        /// </summary>
+        /// <returns></returns>
+        public override string getname()
+        {
+            return "AI"+"("+"type "+Convert.ToString(type)+")";
         }
     }
 }

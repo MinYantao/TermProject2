@@ -89,8 +89,8 @@ namespace TermProject.Winform
             if (pictureBox1.Image != null)
             {
                 string s = name + ".png";
-                string path = Path.Combine("", s);
-                pictureBox1.Image.Save("s");
+                string path = Path.Combine("C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Avators", s);
+                pictureBox1.Image.Save(path);
             }
         }
         /// <summary>
@@ -99,9 +99,10 @@ namespace TermProject.Winform
         /// <param name="user"></param>
         private void saveuser(User user)
         {
-            string filepath = "";
-            FileStream aFile = new FileStream(filepath, FileMode.OpenOrCreate);
+            string filepath = "C:\\Users\\lilies\\Desktop\\Object_oriented\\Code\\TermProject\\Users\\Users.txt";
+            FileStream aFile = new FileStream(filepath, FileMode.Append);
             StreamWriter sw = new StreamWriter(aFile);
+            sw.Write("\n");
             sw.Write(user.ToString());
             sw.Close();
         }

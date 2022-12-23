@@ -90,10 +90,10 @@ namespace TermProject
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public bool move(int x,int y)
+        public bool move(int x,int y, List<Piece> caps)
         {
             bool canplace = false;
-            canplace = ((Chessman)getchessman()).move(x,y);
+            canplace = ((Chessman)getchessman()).move(x,y,caps);
             countpass = 0;countundo= 0;
             return canplace;
         }
@@ -171,9 +171,17 @@ namespace TermProject
         {
             board.clear();
             board.setturns(0);
-            ((Chessman)getchessman()).clear();
-            ((Chessman)getoppositechessman()).clear();
-            countpass=0; countundo=0;
+            try
+            {
+                ((Chessman)getchessman()).clear();
+            }
+            catch (Exception e) { }
+            try
+            {
+                ((Chessman)getoppositechessman()).clear();
+            }
+            catch (Exception e) { }
+            countpass =0; countundo=0;
             undocolor = Color.None;
             board.getstrategy().init(board);
         }
@@ -182,7 +190,9 @@ namespace TermProject
         /// </summary>
         public int isover() 
         {
-            int isover = board.getstrategy().isover(board, ((Chessman)getchessman()), ((Chessman)getoppositechessman()));
+            //此处实际更多的是五子棋的终局判断，查看是否有连成五子
+            //而围棋/黑白棋终局设定为棋盘满或双方均无法落子，而是否可落子已在每次下棋前
+            int isover = board.getstrategy().isover(board);
             //if (isover == 0&& board.getstrategy()is GoStrategy)
             //{
             //    board.setturns();

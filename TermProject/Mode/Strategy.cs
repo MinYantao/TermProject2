@@ -55,9 +55,17 @@ namespace TermProject
         {
             if (this is GoStrategy)
                 return "Go";
-            else
+            else if (this is FiveStrategy)
                 return "Five";
+            else
+                return "Reversi";
         }
+        /// <summary>
+        /// 自动选点落子
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public abstract Piece autoplay(Board board, int type);
         /// <summary>
         /// 局面初始化
         /// </summary>
@@ -78,7 +86,7 @@ namespace TermProject
         /// <param name="past"></param>
         /// <param name="isundo"></param>
         /// <returns></returns>
-        public abstract bool forbiddenjudgement(int x, int y, Board board, Piece[,] past=null);
+        public abstract bool forbiddenjudgement(int x, int y, Board board, Piece[,] past=null,List<Piece> caps=null);
         /// <summary>
        /// 虚着
        /// </summary>

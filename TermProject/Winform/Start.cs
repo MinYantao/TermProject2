@@ -18,11 +18,28 @@ namespace TermProject.Winform
     {
         Player black;
         Player white;
-        public Start(Player black,Player white)
+        public event EventHandler<Board> SendBoard;//传递定制棋盘的事件
+        public Start()
+        {
+            InitializeComponent();
+        }
+        public Start(Player black, Player white)
         {
             InitializeComponent();
             this.black = black;
             this.white = white;
+        }
+
+        /// <summary>
+        /// 接受传来玩家的信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="players"></param>
+        public void GetPlayers(object sender, Player[] players)
+        {
+            this.black = players[0];
+            this.white = players[1];
+            this.ShowDialog();
         }
         /// <summary>
         /// 选择模式和尺寸
@@ -37,7 +54,11 @@ namespace TermProject.Winform
             {
                 MessageBox.Show("Please enter board size betwwen 8 and 19!");
                 return;
-            }       
+            }
+            else if((black is AI || white is AI)&&mode!="Five")
+            {
+                MessageBox.Show("Only support AI for FiveGo mode currently!");return;
+            }
             else if(mode == "Reversi" && size != 8)
             {
                 ChooseForm c = new ChooseForm();
@@ -54,8 +75,7 @@ namespace TermProject.Winform
             strategy.init(board);
             black.setmode(strategy);
             white.setmode(strategy);
-            MainForm f = new MainForm(board,black,white);
-            f.ShowDialog();           
+            SendBoard(this, board);           
             this.Close();
         }        
         /// <summary>

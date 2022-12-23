@@ -14,6 +14,8 @@ namespace TermProject
     {
         private Piece[,] pieces;
         private int turns;
+        private List<Piece> caps;//提子或翻转子
+        private Piece location;//落子位置
         //创建备忘，棋面用深复制进行存储
         public Memento(Piece[,] pieces,int turns)
         {
@@ -22,5 +24,7 @@ namespace TermProject
         }
         public Piece[,] getpieces() { return pieces; }
         public int getturns() { return turns; }
+        public void setcaps(List<Piece> caps) { this.caps = caps; }
+        public void setlocation(Piece p) { this.location = p; }
     }
 }
