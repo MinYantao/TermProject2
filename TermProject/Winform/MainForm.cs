@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,10 +105,15 @@ namespace TermProject.Winform
                 draw.drawpiece(location);
             while (!isover())
             {
-                Thread.Sleep(1000);
+                TimeSpan span = new TimeSpan(0, 0, 1);
+                DateTime before = System.DateTime.Now;
                 location = facade.play();
                 if (location != null)
+                {
+                    while(System.DateTime.Now-before<span)
+                    { }
                     draw.drawpiece(location);
+                }
             }
         }
         /// <summary>
@@ -287,24 +293,32 @@ namespace TermProject.Winform
         private void UndoBut_Click(object sender, EventArgs e)
         {
             int undo = facade.undo();
-            switch (undo)
+            try
             {
-                case -1:
-                    {
-                        MessageBox.Show("Cannot undo in a row!");
-                        return;
-                    }
-                case 0:
-                    {
-                        MessageBox.Show("Cannot undo!");
-                        return;
-                    }
-                case 1:
-                    {
-                        draw.drawpieces();
-                        draw.showturn(board.getturns());
-                        return;
-                    }
+                switch (undo)
+                {
+                    case -1:
+                        {
+                            MessageBox.Show("Cannot undo in a row!");
+                            return;
+                        }
+                    case 0:
+                        {
+                            MessageBox.Show("Cannot undo!");
+                            return;
+                        }
+                    case 1:
+                        {
+                            draw.drawpieces();
+                            draw.showturn(board.getturns());
+                            return;
+                        }
+                }
+            }
+            catch 
+            {
+                MessageBox.Show("Cannot undo!");
+                return;
             }
         }
         /// <summary>

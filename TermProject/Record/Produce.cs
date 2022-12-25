@@ -74,6 +74,10 @@ namespace TermProject
             videoWriter.Close();
             ison=false;
         }
+        /// <summary>
+        /// 获取当前录制状态
+        /// </summary>
+        /// <returns></returns>
         public bool getstate() { return ison; } 
     }
 }

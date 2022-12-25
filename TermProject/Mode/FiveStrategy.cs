@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -250,7 +251,7 @@ namespace TermProject
             return 0;
         }
 
-        #region AI
+        #region AI1,2
         /// <summary>
         /// 自动选点落子
         /// </summary>
@@ -343,7 +344,8 @@ namespace TermProject
         public int evaluate(int x, int y, Board board)
         {
             Piece p = board.getpieces()[x,y];
-            p.setcolor(board.getcolor());
+            if(p.getcolor()==Color.None)
+                p.setcolor(board.getcolor());
             Color op = p.getoppositecolor();
             int index;
             int score = 0;
@@ -404,15 +406,6 @@ namespace TermProject
             return scores[ek, ee];
         }
         /// <summary>
-        /// AI3:根据简单计分函数选点
-        /// </summary>
-        /// <param name="board"></param>
-        /// <returns></returns>
-        public Piece AI3(Board board)
-        {
-            return null;
-        }
-        /// <summary>
         /// 获取所有空点位
         /// </summary>
         /// <param name="board"></param>
@@ -427,8 +420,173 @@ namespace TermProject
                     list.Add(piece);
             }
             return list;
-        } 
+        }
         #endregion
 
+        #region AI3
+        /// <summary>
+        /// AI3（蒙特卡洛树搜索）
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public Piece AI3(Board board)
+        {
+            List<Piece> blanks = getblanks(board);
+            if (blanks.Count == 1)
+                return blanks[0];
+            Piece[,] pieces= board.getpieces();
+            int size = board.getsize();
+            Color color= board.getcolor();
+            //开局直接下中间
+            if (board.getturns() == 0)
+            {
+                pieces[size / 2, size / 2].setcolor(color);
+                return pieces[size / 2, size / 2];
+            }
+            if (board.getturns() == 1)
+            {
+                if (pieces[size / 2, size / 2].getcolor() == Color.None)
+                {
+                    pieces[size / 2, size / 2].setcolor(color);
+                    return pieces[size / 2, size / 2];
+                }
+                else
+                {
+                    pieces[size / 2 - 1, size / 2].setcolor(color);
+                    return pieces[size / 2 - 1, size / 2];
+                }
+            }
+            TimeSpan span = new TimeSpan(0, 0, 20);
+            DateTime before = System.DateTime.Now;
+            //用于记录每一可能落子的模拟次数
+            Dictionary<(int, int, Color), int> moves = new Dictionary<(int, int, Color), int>();
+            //用于记录每一可能落子的赢次数
+            Dictionary<(int, int, Color), int> wins = new Dictionary<(int, int, Color), int>();
+            Piece[,] current = (Piece[,])Clone.clone(pieces);
+            int turns = board.getturns();
+            int simulationtimes = 0;
+            while (System.DateTime.Now - before < span)//限定模拟时长
+            {
+                simulationtimes++;
+                Simulation(board, moves, wins);
+                board.setpieces(current);//回复局面
+                board.setturns(turns);
+            }
+            Piece select = selectmove(board, moves, wins);//选择最优落子
+            if (select != null)
+                board.getpieces()[select.getx(), select.gety()].setcolor(color);
+            return select;
+        }
+        /// <summary>
+        /// 模拟，包括四步：选择=>扩展=>模拟=>回溯
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="moves"></param>
+        /// <param name="wins"></param>
+        public void Simulation(Board board, Dictionary<(int, int, Color), int> moves, Dictionary<(int, int, Color), int> wins)
+        {
+            List<Piece> blanks = getblanks(board);
+            Color color = board.getcolor();
+            bool expand = true;//是否可扩展
+            int maxmoves = 1000;//限定模拟步数
+            double Cfactor = 1.96;//UCB计算常数
+            int depth = 1;
+            int whowin = -1;//赢家(-1未分胜负，1黑2白3平）
+            List<(int, int, Color)> visited = new List<(int, int, Color)>();//记录当前路径
+            for (int i = 0; i < maxmoves; i++)
+            {
+                int x; int y; int index = 0;
+                //选择
+                //如果当前所有可能落子都被统计过则选值最大的
+                //如没有则随机落子
+                if (blanks.All(p => moves.ContainsKey((p.getx(), p.gety(), color))))
+                {
+                    double logtotal = Math.Log(blanks.Sum(p => moves[(p.getx(), p.gety(), color)]));
+                    double max = 0.0;
+                    double ucb = 0.0;
+                    foreach (Piece p in blanks)
+                    {
+                        ucb = wins[(p.getx(), p.gety(), color)] / moves[(p.getx(), p.gety(), color)]
+                            + Math.Sqrt(Cfactor * logtotal / moves[(p.getx(), p.gety(), color)]);
+                        if (ucb > max)
+                        {
+                            max = ucb;
+                            index = blanks.IndexOf(p);
+                        }
+                    }
+                }
+                else
+                {
+                    Random random = new Random();
+                    index = random.Next(blanks.Count);
+                }
+                x = blanks[index].getx(); y = blanks[index].gety();
+                board.placepiece(x, y, color);//在选点落子
+                blanks.RemoveAt(index);
+                //扩展
+                //对于上一步选择的落子位置，如尚未被统计，则将其加入列表进行模拟
+                //一次模拟仅进行一次扩展
+                if (expand && !(moves.ContainsKey((x, y, color))))
+                {
+                    expand = false;
+                    moves.Add((x, y, color), 0);
+                    wins.Add((x, y, color), 0);
+                    if (i > depth)
+                        depth = i;
+                }
+                //将此次落子加入路径
+                visited.Add((x, y, color));
+                //判断是否终局
+                bool noblank = (blanks.Count == 0);
+                Group g = getlonggroup(board, board.getpieces()[x, y]);
+                whowin = (g.getkeynum()>4?(g.getcolor()==Color.Black?1:2):-1);
+                if (noblank || whowin > 0)
+                    break;
+                board.setturns();//进行下一步模拟
+                color = board.getcolor();
+            }
+            //回溯
+            foreach (var a in visited)
+            {
+                if (!moves.ContainsKey(a))
+                    continue;
+                moves[a] += 1;//如在某一可能落子处落过子，则模拟次数+1
+                if ((a.Item3 == Color.White && whowin == 2) || (a.Item3 == Color.Black && whowin == 1))
+                    wins[a] += 1;//如在某一可能落子处落过某色子后，最终某色取得胜利，则赢次数+1
+            }
+        }
+        /// <summary>
+        /// 选择获胜率最高的可能落子（赢次/总模拟次）
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="moves"></param>
+        /// <param name="wins"></param>
+        /// <returns></returns>
+        public Piece selectmove(Board board, Dictionary<(int, int, Color), int> moves, Dictionary<(int, int, Color), int> wins)
+        {
+            Color color = board.getcolor();
+            List<Piece> blanks = getblanks(board);
+            double max = 0.0;
+            int index = 0;
+            double temp = 0.0;
+            int x; int y;
+            foreach (Piece piece in blanks)
+            {
+                x = piece.getx();
+                y = piece.gety();
+                if (wins.ContainsKey((x, y, color)))
+                    temp = 0;
+                temp = (double)(wins.ContainsKey((x, y, color)) ? wins[(x, y, color)] : 0)
+                    /(double) (moves.ContainsKey((x, y, color)) ? moves[(x, y, color)] : 1);
+                if (temp > max)
+                {
+                    max = temp;
+                    index = blanks.IndexOf(piece);
+                }
+            }
+            x = blanks[index].getx(); y = blanks[index].gety();
+            return new Piece(color, x, y);
+        } 
+        #endregion
     }
 }
