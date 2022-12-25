@@ -70,8 +70,8 @@ namespace TermProject.Winform
         public void GetBoard(object sender, Board board)
         {
             this.board = board; 
-            if(draw!=null)
-                draw.drawboard();
+            //if(draw!=null)
+            //    draw.drawboard();
         }
         public void GetAvators(object sender, Image[] Avators)
         {
@@ -403,6 +403,10 @@ namespace TermProject.Winform
             Start f = new Start(black, white);
             f.SendBoard += new EventHandler<Board>(this.GetBoard);
             f.ShowDialog();
+            draw.update();
+            draw.drawboard();
+            draw.drawpieces();
+            draw.showturn(board.getturns());
         }
         /// <summary>
         /// 开始游戏,主要用于有AI时（菜单栏Start）
